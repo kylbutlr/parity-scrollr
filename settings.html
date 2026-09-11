@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parity Scrollr settings</title>
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
+      <h1>Settings</h1>
+      <p class="lede">Safer defaults request only the two sites in each comparison. You can enable the classic workflow when speed matters more than repeated permission prompts. End active comparisons before removing persistent site access.</p>
+
+      <section class="card warning" aria-labelledby="classic-title">
+        <h2 id="classic-title">Classic workflow</h2>
+        <p>Restores the previous low-friction experience: persistent access to all HTTP and HTTPS sites, compatibility mode on by default, full path/query/fragment URL parity, remembered replica URLs, and Shopify preview-bar handling.</p>
+        <button id="enable-classic" class="primary" type="button">Enable classic workflow</button>
+      </section>
+
+      <section class="card" aria-label="Individual settings">
+        <label class="setting-row" for="broad-host-access">
+          <span><strong>Persistent access to all sites</strong><small>Avoids per-comparison site prompts and the extra capture authorization click. Parity Scrollr still injects code and changes headers only inside active comparison tabs.</small></span>
+          <input id="broad-host-access" type="checkbox" />
+        </label>
+        <label class="setting-row" for="default-compatibility-mode">
+          <span><strong>Compatibility mode by default</strong><small>Removes X-Frame-Options and the full enforced Content Security Policy only for selected sites inside active comparison tabs.</small></span>
+          <input id="default-compatibility-mode" type="checkbox" />
+        </label>
+        <label class="setting-row" for="include-url-details">
+          <span><strong>Mirror query parameters and fragments</strong><small>Matches the previous URL parity behavior. These URL parts can contain preview or signed-link tokens and may be sent to the other selected site.</small></span>
+          <input id="include-url-details" type="checkbox" />
+        </label>
+        <label class="setting-row" for="remember-replica-url">
+          <span><strong>Remember the complete replica URL</strong><small>Stores it only in this browser. Leave off to avoid retaining paths, queries, and fragments after a comparison.</small></span>
+          <input id="remember-replica-url" type="checkbox" />
+        </label>
+        <label class="setting-row" for="shopify-profile">
+          <span><strong>Shopify profile by default</strong><small>Temporarily hides known Shopify theme preview bars during full-page capture, then restores their original inline display state.</small></span>
+          <input id="shopify-profile" type="checkbox" />
+        </label>
+      </section>
+
+      <div class="actions">
+        <button id="save-settings" class="primary" type="button">Save settings</button>
+        <button id="restore-safer" type="button">Restore safer defaults</button>
+        <button id="clear-data" type="button">Clear saved comparison data</button>
+      </div>
+      <p id="settings-status" class="status" role="status" aria-live="polite"></p>
+
+      <nav class="footer-links" aria-label="Product information">
+        <a href="welcome.html">How Parity Scrollr works</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="support.html">Support and troubleshooting</a>
+      </nav>
+    </main>
+    <script src="settings-data.js"></script>
+    <script src="settings.js"></script>
+  </body>
+</html>

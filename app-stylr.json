@@ -1,0 +1,7 @@
+{
+  "name": "App Stylr",
+  "version": "1.0.0",
+  "release": "https://github.com/kylbutlr/app-stylr/tree/v1.0.0",
+  "theme": "dark",
+  "exceptions": "docs/app-stylr-exceptions.md"
+}

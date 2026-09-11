@@ -1,0 +1,9 @@
+{
+  "name": "parity-scrollr",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "package": "bash scripts/package-extension.sh"
+  }
+}

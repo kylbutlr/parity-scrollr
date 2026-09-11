@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parity Scrollr support</title>
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
+      <h1>Support and troubleshooting</h1>
+      <p class="lede">Parity Scrollr compares pages that allow a browser extension to frame and interact with them. It does not bypass authentication, anti-bot protections, or security controls.</p>
+
+      <h2>A page stays blank or shows a framing warning</h2>
+      <p>End the comparison and restart it with Compatibility mode enabled. If it still fails, open the page directly and confirm that you can access it normally. JavaScript frame busting, bot challenges, sign-in boundaries, browser-owned pages, and some site policies remain unsupported.</p>
+
+      <h2>A signed-in page appears signed out</h2>
+      <p>Framed pages can receive different cookie treatment, especially for third-party cookies. Open both sites directly, sign in if appropriate, and try again. Parity Scrollr does not capture, copy, or bypass credentials.</p>
+
+      <h2>The responsive rendering differs from a device</h2>
+      <p>Viewport controls change CSS width and height only. They do not emulate user agent, device pixel ratio, touch input, orientation APIs, safe-area insets, or hardware. Use real-device or browser device emulation for those checks.</p>
+
+      <h2>Capture is disabled</h2>
+      <p>Click the Parity Scrollr toolbar icon while the comparison tab is active. This grants temporary capture access for that tab. You can instead enable persistent all-site access in Settings.</p>
+
+      <h2>Full-page capture fails or looks inconsistent</h2>
+      <p>Keep the comparison tab active until capture finishes. Sticky and fixed elements can repeat because the extension captures multiple scroll positions. Lazy content, animation, video, infinite scroll, or a growing page can prevent a stable result. The capture stops after 60 screenshots and scales extremely tall output to browser-safe image dimensions.</p>
+
+      <h2>Shopify theme previews</h2>
+      <p>Select the Shopify site profile when comparing theme previews. It temporarily hides recognized Shopify preview bars during full-page capture and restores them afterward. The profile does not alter storefront content or apply to other sites.</p>
+
+      <h2>Get help</h2>
+      <p>Report an issue through the repository support channel supplied with your installation. Include browser name and version, extension version, whether Compatibility mode was enabled, and sanitized URLs that contain no private tokens.</p>
+
+      <nav class="footer-links"><a href="welcome.html">How it works</a><a href="settings.html">Settings</a><a href="privacy.html">Privacy</a></nav>
+    </main>
+  </body>
+</html>

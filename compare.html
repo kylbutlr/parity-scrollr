@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parity Scrollr</title>
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="icons/icon-32.png" sizes="32x32" />
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="compare.css" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="brand">
+        <img src="icons/icon.svg" alt="" />
+        <span>Parity Scrollr</span>
+      </div>
+      <div class="viewport-controls" aria-label="Shared viewport size">
+        <select id="viewport-preset" aria-label="Viewport preset">
+          <option value="320x568">Small Mobile · 320×568</option>
+          <option value="375x667">iPhone SE · 375×667</option>
+          <option value="390x844">iPhone 14 · 390×844</option>
+          <option value="430x932">iPhone 14 Pro Max · 430×932</option>
+          <option value="744x1133">iPad mini · 744×1133</option>
+          <option value="820x1180">iPad 11 · 820×1180</option>
+          <option value="1032x1376">iPad Pro 13 · 1032×1376</option>
+          <option value="1024x768">Small Desktop · 1024×768</option>
+          <option value="1280x800">Medium Desktop · 1280×800</option>
+          <option value="1440x900" selected>Large Desktop · 1440×900</option>
+          <option value="1600x900">Extra Large Desktop · 1600×900</option>
+          <option value="custom">Custom</option>
+        </select>
+        <label class="dimension-control">
+          <span>W</span>
+          <input id="viewport-width" type="number" min="240" max="3840" step="1" value="1440" aria-label="Viewport width in pixels" required />
+        </label>
+        <span class="dimension-separator" aria-hidden="true">×</span>
+        <label class="dimension-control">
+          <span>H</span>
+          <input id="viewport-height" type="number" min="320" max="2160" step="1" value="900" aria-label="Viewport height in pixels" required />
+        </label>
+        <button id="apply-viewport" type="button">Apply</button>
+        <label class="toggle viewport-toggle" title="Expand both viewport heights to fill the available pane height without changing their width or scale">
+          <input id="max-height-toggle" type="checkbox" />
+          <span>Max height</span>
+        </label>
+        <span id="scale-indicator" class="scale-indicator" title="Visual scale used to fit each viewport">100%</span>
+      </div>
+      <div class="controls">
+        <label class="toggle" title="Keyboard shortcut: S">
+          <input id="sync-toggle" type="checkbox" checked />
+          <span>Sync scroll</span>
+        </label>
+        <label class="toggle" title="Mirror each navigation to the same path on the other site's origin">
+          <input id="url-parity-toggle" type="checkbox" />
+          <span>URL parity</span>
+        </label>
+        <label class="toggle" title="Also copy query parameters and fragments when URL parity is enabled">
+          <input id="url-details-toggle" type="checkbox" />
+          <span>Query + hash</span>
+        </label>
+        <label class="toggle" title="Stack both pages for rapid visual comparison">
+          <input id="blink-toggle" type="checkbox" />
+          <span>Blink mode</span>
+        </label>
+        <button
+          id="blink-reveal-button"
+          class="blink-reveal-button"
+          type="button"
+          title="Hold this button or the B key to show the replica"
+          aria-pressed="false"
+          hidden
+        >
+          Hold B · Replica
+        </button>
+        <div class="history-controls" aria-label="Reference site history">
+          <button id="reference-back-button" type="button" title="Go back on the reference site only">← Back</button>
+          <button id="reference-forward-button" type="button" title="Go forward on the reference site only">Forward →</button>
+        </div>
+        <button id="top-button" type="button" title="Keyboard shortcut: 0">Back to top</button>
+        <button id="swap-button" type="button">Swap sides</button>
+        <button id="reload-button" type="button">Reload both</button>
+        <div class="capture-controls" aria-label="Capture comparison">
+          <button id="capture-button" type="button" title="Download the visible comparison as a PNG">Capture view</button>
+          <button id="full-page-button" type="button" title="Scroll and stitch both entire pages into one PNG" aria-live="polite">Capture full page</button>
+        </div>
+        <button id="settings-button" type="button">Settings</button>
+        <button id="end-button" type="button">End</button>
+      </div>
+    </header>
+
+    <div class="session-bar" role="status">
+      <span id="mode-indicator"></span>
+      <span id="capture-status"></span>
+    </div>
+
+    <main id="comparison" class="comparison" aria-label="Side-by-side website comparison">
+      <section id="reference-pane" class="pane">
+        <div class="pane-header">
+          <span class="pane-label">REFERENCE</span>
+          <span id="reference-address" class="address"></span>
+          <button id="reference-open" class="open-button" type="button">Open tab</button>
+        </div>
+        <div id="reference-stage" class="frame-stage">
+          <div id="reference-shell" class="frame-shell">
+            <iframe id="reference-frame" title="Reference site" sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            <div id="reference-status" class="frame-status" role="status" aria-live="polite">
+              <span class="status-spinner" aria-hidden="true"></span>
+              <span id="reference-status-message">Loading reference…</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <section id="replica-pane" class="pane">
+        <div class="pane-header">
+          <span class="pane-label">REPLICA</span>
+          <span id="replica-address" class="address"></span>
+          <button id="replica-open" class="open-button" type="button">Open tab</button>
+        </div>
+        <div id="replica-stage" class="frame-stage">
+          <div id="replica-shell" class="frame-shell">
+            <iframe id="replica-frame" title="Replica site" sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            <div id="replica-status" class="frame-status" role="status" aria-live="polite">
+              <span class="status-spinner" aria-hidden="true"></span>
+              <span id="replica-status-message">Loading replica…</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="loading" class="loading" role="status">Preparing comparison…</div>
+    <div id="fatal-error" class="fatal-error" role="alert" hidden></div>
+    <script src="settings-data.js"></script>
+    <script src="viewport-sizing.js"></script>
+    <script src="url-parity.js"></script>
+    <script src="full-page-capture.js"></script>
+    <script src="compare.js"></script>
+  </body>
+</html>

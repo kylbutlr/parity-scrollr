@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parity Scrollr</title>
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="icons/icon-32.png" sizes="32x32" />
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main id="setup-view">
+      <div class="brand-lockup">
+        <img class="brand-icon" src="icons/icon.svg" alt="" />
+        <div class="eyebrow">Parity Scrollr</div>
+      </div>
+      <h1>Compare two pages</h1>
+      <p class="intro">The page you started on is used as the reference. Add the replica URL, then compare them side by side.</p>
+
+      <form id="compare-form">
+        <label for="reference-url">Reference URL</label>
+        <div class="input-row">
+          <input id="reference-url" name="reference" type="url" inputmode="url" required />
+          <button id="use-current" class="secondary compact" type="button">Current</button>
+        </div>
+
+        <label for="replica-url">Replica URL</label>
+        <input id="replica-url" name="replica" type="url" inputmode="url" placeholder="https://replica.example.com/page" required autofocus />
+
+        <label class="choice-row" for="compatibility-mode">
+          <input id="compatibility-mode" type="checkbox" />
+          <span>
+            <strong>Embedding compatibility</strong>
+            <small>Temporarily remove framing headers for these sites in the comparison tab.</small>
+          </span>
+        </label>
+
+        <label for="site-profile">Site profile</label>
+        <select id="site-profile">
+          <option value="none">None</option>
+          <option value="shopify">Shopify theme preview</option>
+        </select>
+
+        <p id="access-note" class="notice"></p>
+
+        <p id="error" class="error" role="alert" hidden></p>
+        <button class="primary" type="submit">Open comparison</button>
+      </form>
+      <button id="open-settings" class="text-button" type="button">Settings, privacy, and permissions</button>
+    </main>
+    <main id="capture-ready-view" class="capture-ready" hidden>
+      <div class="brand-lockup">
+        <img class="brand-icon" src="icons/icon.svg" alt="" />
+        <div class="eyebrow">Parity Scrollr</div>
+      </div>
+      <h1>Capture enabled</h1>
+      <p class="intro">Visible and full-page capture are enabled only for this comparison tab. Close this popup and use the capture controls.</p>
+      <button id="close-popup" class="primary" type="button">Return to comparison</button>
+    </main>
+    <script src="settings-data.js"></script>
+    <script src="site-access.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

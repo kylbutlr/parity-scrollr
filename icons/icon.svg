@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">Parity Scrollr icon</title>
+  <desc id="description">A rounded charcoal-to-mint gradient square with two synchronized vertical scroll arrows.</desc>
+  <defs>
+    <linearGradient id="icon-gradient" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#111111" />
+      <stop offset="0.48" stop-color="#49545B" />
+      <stop offset="1" stop-color="#A9CEC2" />
+    </linearGradient>
+  </defs>
+  <rect x="92" y="92" width="840" height="840" rx="190" fill="url(#icon-gradient)" />
+  <path d="M390 320V704M330 380 390 320 450 380M330 644 390 704 450 644M634 320V704M574 380 634 320 694 380M574 644 634 704 694 644" fill="none" stroke="#FFFFFF" stroke-width="72" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

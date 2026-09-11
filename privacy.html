@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parity Scrollr privacy</title>
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
+      <h1>Privacy</h1>
+      <p class="lede">Parity Scrollr keeps comparison data on your device. It has no accounts, analytics, advertising, telemetry, hosted screenshot storage, or extension-operated servers.</p>
+
+      <h2>Data the extension handles</h2>
+      <ul>
+        <li>The two URLs you choose are held in browser session storage while a comparison is being launched or is active.</li>
+        <li>Viewport and extension settings are saved in browser local storage.</li>
+        <li>The complete replica URL is saved only if you enable Remember the complete replica URL.</li>
+        <li>Capture images are assembled in browser memory and downloaded directly to your device.</li>
+      </ul>
+
+      <h2>Site access</h2>
+      <p>By default, the extension asks for access only to the exact origins selected for a comparison and releases those grants after the last matching comparison ends. Persistent all-site access is optional and must be enabled in Settings. Injection is limited to the comparison tab, and the comparison script activates only in approved direct child frames.</p>
+
+      <h2>Header behavior</h2>
+      <p>Standard mode does not change response headers. When you enable Compatibility mode, temporary session rules remove enforced Content Security Policy and X-Frame-Options headers only from selected-site subframe responses in that one comparison tab. The rules are removed when the comparison ends, the tab closes, or the tab navigates away.</p>
+
+      <h2>Third-party sites</h2>
+      <p>The pages you compare communicate with their own servers and third parties according to their own privacy policies. Parity Scrollr does not proxy those requests or send their contents to the extension author.</p>
+
+      <nav class="footer-links"><a href="welcome.html">How it works</a><a href="settings.html">Settings</a><a href="support.html">Support</a></nav>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,146 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ui-text);
+  background: var(--ui-canvas);
+}
+
+.page-shell {
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0 72px;
+}
+
+.page-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ui-accent);
+  font-weight: 700;
+}
+
+.page-brand img {
+  width: 40px;
+  height: 40px;
+}
+
+h1 {
+  margin: 28px 0 10px;
+  font-size: clamp(32px, 6vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  margin: 32px 0 10px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+
+p,
+li {
+  color: var(--ui-text-muted);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+a {
+  color: var(--ui-link);
+}
+
+.lede {
+  max-width: 680px;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.card {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  background: var(--ui-surface);
+}
+
+.setting-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+  padding: 18px 0;
+  border-top: 1px solid var(--ui-border);
+}
+
+.setting-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.setting-row:last-child {
+  padding-bottom: 0;
+}
+
+.setting-row strong,
+.setting-row small {
+  display: block;
+}
+
+.setting-row small {
+  max-width: 580px;
+  margin-top: 5px;
+  color: var(--ui-text-muted);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ui-accent);
+}
+
+button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 8px;
+  color: var(--ui-text);
+  background: var(--ui-surface-raised);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+button.primary {
+  border-color: transparent;
+  color: var(--ui-accent-text);
+  background: var(--ui-accent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.status {
+  min-height: 23px;
+  margin-top: 14px;
+  color: var(--ui-info);
+}
+
+.warning {
+  border-color: var(--ui-warning);
+  background: var(--ui-warning-surface);
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 32px;
+}
