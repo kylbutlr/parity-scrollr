@@ -1,4 +1,4 @@
-# Support policy draft
+# Support
 
 Parity Scrollr public beta targets current stable Chrome and Microsoft Edge on desktop.
 
@@ -13,4 +13,4 @@ When reporting a problem, include:
 
 Do not submit account credentials, cookies, private tokens, or confidential captures.
 
-The public support URL or email remains a store-submission prerequisite. The repository owner must approve it before publication.
+Public beta support is available through the [Parity Scrollr issue tracker](https://github.com/kylbutlr/parity-scrollr/issues). Configure that public destination as the support URL before either store submission.
