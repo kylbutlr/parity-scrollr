@@ -191,6 +191,11 @@ class FakeImage {
     "#capture-status",
     "#loading",
     "#fatal-error",
+    "#fatal-error-message",
+    "#fatal-end-button",
+    "#help-button",
+    "#quick-guide",
+    "#dismiss-guide-button",
     "#viewport-preset",
     "#viewport-width",
     "#viewport-height",
@@ -226,6 +231,7 @@ class FakeImage {
   elements.get("#viewport-width").value = "1440";
   elements.get("#viewport-height").value = "900";
   elements.get("#url-parity-toggle").checked = false;
+  elements.get("#quick-guide").hidden = true;
   elements.get("#reference-shell").getBoundingClientRect = () => ({
     bottom: 500,
     height: 400,
@@ -396,10 +402,27 @@ class FakeImage {
 
   await new Promise((resolve) => setImmediate(resolve));
 
+  const helpButton = elements.get("#help-button");
+  const quickGuide = elements.get("#quick-guide");
+  assert.equal(quickGuide.hidden, false, "the first comparison guide must open automatically");
+  assert.equal(helpButton.attributes.get("aria-expanded"), "true");
+  await elements.get("#dismiss-guide-button").listeners.get("click")();
+  assert.equal(quickGuide.hidden, true);
+  assert.equal(storageWrites.at(-1).comparisonGuideDismissed, true);
+  helpButton.listeners.get("click")();
+  assert.equal(quickGuide.hidden, false, "Help must reopen dismissed guidance");
+  documentListeners.get("keydown")({
+    event: undefined,
+    key: "Escape",
+    preventDefault() {},
+    target: new FakeElement()
+  });
+  assert.equal(quickGuide.hidden, true, "Escape must close the guide");
+
   assert.equal(elements.get("#reference-status").hidden, false);
   assert.equal(elements.get("#replica-status").hidden, false);
   assert.equal(elements.get("#reference-status-message").textContent, "Loading reference…");
-  assert.equal(elements.get("#replica-status-message").textContent, "Loading replica…");
+  assert.equal(elements.get("#replica-status-message").textContent, "Loading implementation…");
 
   const maxHeightToggle = elements.get("#max-height-toggle");
   maxHeightToggle.checked = true;
@@ -441,6 +464,11 @@ class FakeImage {
 
   const urlParityToggle = elements.get("#url-parity-toggle");
   assert.equal(urlParityToggle.checked, false, "URL parity must be off by default");
+  assert.equal(
+    elements.get("#url-details-toggle").disabled,
+    true,
+    "query and hash controls must be unavailable until URL parity is enabled"
+  );
 
   windowListeners.get("message")({
     source: referenceFrame.contentWindow,
@@ -457,6 +485,8 @@ class FakeImage {
   );
 
   urlParityToggle.checked = true;
+  urlParityToggle.listeners.get("change")();
+  assert.equal(elements.get("#url-details-toggle").disabled, false);
   windowListeners.get("message")({
     source: referenceFrame.contentWindow,
     data: {

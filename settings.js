@@ -38,7 +38,17 @@ async function removeBroadAccess() {
 
 async function hasActiveComparisons() {
   const stored = await chrome.storage.session.get(null);
-  return Object.keys(stored).some((key) => key.startsWith("activeComparison_"));
+  return Object.keys(stored).some(
+    (key) => key.startsWith("activeComparison_") || key.startsWith("comparison_")
+  );
+}
+
+async function removeAllSiteAccess() {
+  const granted = await chrome.permissions.getAll();
+  if (granted.origins?.length) {
+    return chrome.permissions.remove({ origins: granted.origins });
+  }
+  return true;
 }
 
 document.querySelector("#enable-classic").addEventListener("click", async () => {
@@ -94,8 +104,24 @@ document.querySelector("#restore-safer").addEventListener("click", async () => {
 });
 
 document.querySelector("#clear-data").addEventListener("click", async () => {
-  await chrome.storage.local.remove(["lastReplicaUrl", "viewportSize", "maxHeight"]);
-  status.textContent = "Saved replica URL and viewport preferences cleared.";
+  try {
+    if (await hasActiveComparisons()) {
+      status.textContent = "End active comparisons before clearing local data and site access.";
+      return;
+    }
+
+    const siteAccessRemoved = await removeAllSiteAccess();
+    await Promise.all([
+      chrome.storage.local.clear(),
+      chrome.storage.session.clear()
+    ]);
+    render(ParitySettings.normalize());
+    status.textContent = siteAccessRemoved
+      ? "Local settings, saved URLs, first-use choices, and site access were cleared. Downloaded PNG files were not deleted."
+      : "Local data was cleared, but the browser did not remove every site-access grant. Review Parity Scrollr in your browser extension settings.";
+  } catch (error) {
+    status.textContent = `Local data could not be cleared: ${error.message || "Try again."}`;
+  }
 });
 
 async function initialize() {

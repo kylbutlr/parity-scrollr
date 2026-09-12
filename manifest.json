@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Parity Scrollr",
   "version": "2.0.0",
-  "description": "Compare a reference site and replica side by side with synchronized scrolling and optional URL parity.",
+  "description": "Compare reference and implementation pages with synchronized scrolling, responsive viewports, blink mode, and screenshots.",
   "minimum_chrome_version": "102",
   "permissions": [
     "activeTab",

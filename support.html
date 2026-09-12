@@ -11,10 +11,10 @@
     <main class="page-shell">
       <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
       <h1>Support and troubleshooting</h1>
-      <p class="lede">Parity Scrollr compares pages that allow a browser extension to frame and interact with them. It does not bypass authentication, anti-bot protections, or security controls.</p>
+      <p class="lede">Some pages cannot be shown inside a comparison. Parity Scrollr does not bypass sign-in, bot protection, or site security controls.</p>
 
       <h2>A page stays blank or shows a framing warning</h2>
-      <p>End the comparison and restart it with Compatibility mode enabled. If it still fails, open the page directly and confirm that you can access it normally. JavaScript frame busting, bot challenges, sign-in boundaries, browser-owned pages, and some site policies remain unsupported.</p>
+      <p>End the comparison and restart it with Compatibility mode enabled. If it still fails, open the page directly and confirm that you can access it normally. Pages with their own frame-blocking code, bot challenges, sign-in boundaries, browser-owned pages, and some site policies remain unsupported.</p>
 
       <h2>A signed-in page appears signed out</h2>
       <p>Framed pages can receive different cookie treatment, especially for third-party cookies. Open both sites directly, sign in if appropriate, and try again. Parity Scrollr does not capture, copy, or bypass credentials.</p>
@@ -31,8 +31,11 @@
       <h2>Shopify theme previews</h2>
       <p>Select the Shopify site profile when comparing theme previews. It temporarily hides recognized Shopify preview bars during full-page capture and restores them afterward. The profile does not alter storefront content or apply to other sites.</p>
 
+      <h2>Shopify Admin is not a comparison page</h2>
+      <p>Parity Scrollr blocks Shopify Admin URLs before requesting site access. Open the storefront or theme preview in a regular browser tab, then start the comparison there. The extension does not need access to admin.shopify.com.</p>
+
       <h2>Get help</h2>
-      <p>Report an issue through the repository support channel supplied with your installation. Include browser name and version, extension version, whether Compatibility mode was enabled, and sanitized URLs that contain no private tokens.</p>
+      <p><a href="https://github.com/kylbutlr/parity-scrollr/issues" target="_blank" rel="noopener noreferrer">Report an issue on GitHub</a>. Include your browser and extension versions, what you tried, the visible error, whether Compatibility mode was on, and sanitized URLs with private tokens removed. Do not attach confidential captures.</p>
 
       <nav class="footer-links"><a href="welcome.html">How it works</a><a href="settings.html">Settings</a><a href="privacy.html">Privacy</a></nav>
     </main>

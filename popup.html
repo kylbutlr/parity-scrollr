@@ -16,38 +16,48 @@
         <div class="eyebrow">Parity Scrollr</div>
       </div>
       <h1>Compare two pages</h1>
-      <p class="intro">The page you started on is used as the reference. Add the replica URL, then compare them side by side.</p>
+      <p class="intro">The page you are viewing is the reference. Add the page you want to compare with it.</p>
 
       <form id="compare-form">
         <label for="reference-url">Reference URL</label>
         <div class="input-row">
-          <input id="reference-url" name="reference" type="url" inputmode="url" required />
+          <input id="reference-url" name="reference" type="url" inputmode="url" aria-describedby="reference-state" required />
           <button id="use-current" class="secondary compact" type="button">Current</button>
         </div>
+        <p id="reference-state" class="field-help" hidden></p>
 
-        <label for="replica-url">Replica URL</label>
-        <input id="replica-url" name="replica" type="url" inputmode="url" placeholder="https://replica.example.com/page" required autofocus />
+        <label for="replica-url">Implementation URL</label>
+        <input id="replica-url" name="replica" type="url" inputmode="url" placeholder="https://implementation.example.com/page" required autofocus />
 
         <label class="choice-row" for="compatibility-mode">
           <input id="compatibility-mode" type="checkbox" />
           <span>
-            <strong>Embedding compatibility</strong>
-            <small>Temporarily remove framing headers for these sites in the comparison tab.</small>
+            <strong>Compatibility mode</strong>
+            <small>Try this only if a page will not load inside the comparison.</small>
           </span>
         </label>
+        <details class="context-help">
+          <summary>What Compatibility mode changes</summary>
+          <p>It temporarily relaxes framing protection for the two selected sites in this comparison tab. It does not bypass sign-in, bot checks, or other security controls.</p>
+        </details>
 
         <label for="site-profile">Site profile</label>
-        <select id="site-profile">
+        <select id="site-profile" aria-describedby="site-profile-help">
           <option value="none">None</option>
           <option value="shopify">Shopify theme preview</option>
         </select>
+        <p id="site-profile-help" class="field-help">Choose Shopify only for a theme preview. It hides the Shopify preview bar during full-page capture.</p>
 
         <p id="access-note" class="notice"></p>
+        <p class="privacy-note">Parity Scrollr keeps these URLs in this browser for the comparison session. <button id="open-privacy" class="inline-button" type="button">Privacy details</button></p>
 
-        <p id="error" class="error" role="alert" hidden></p>
-        <button class="primary" type="submit">Open comparison</button>
+        <p id="error" class="error" role="alert" tabindex="-1" hidden></p>
+        <button id="submit-button" class="primary" type="submit">Open comparison</button>
       </form>
-      <button id="open-settings" class="text-button" type="button">Settings, privacy, and permissions</button>
+      <div class="footer-actions">
+        <button id="open-how-it-works" class="text-button" type="button">How it works</button>
+        <button id="open-settings" class="text-button" type="button">Settings</button>
+      </div>
     </main>
     <main id="capture-ready-view" class="capture-ready" hidden>
       <div class="brand-lockup">

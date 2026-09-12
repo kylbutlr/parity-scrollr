@@ -9,7 +9,7 @@ body {
 }
 
 main {
-  padding: 24px;
+  padding: 22px 24px;
 }
 
 .brand-lockup {
@@ -174,13 +174,65 @@ button {
   margin: 2px 0 0;
 }
 
-.text-button {
-  width: 100%;
+.field-help,
+.privacy-note,
+.context-help {
+  margin: -3px 0 2px;
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.field-help.is-warning {
+  margin-top: 0;
+  color: var(--ui-warning);
+}
+
+.context-help {
+  margin: -1px 0 4px 40px;
+}
+
+.context-help summary {
+  color: var(--ui-link);
+  cursor: pointer;
+}
+
+.context-help p {
+  margin: 6px 0 0;
+}
+
+.privacy-note {
+  margin-top: 0;
+}
+
+.inline-button {
   height: auto;
-  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  color: var(--ui-link);
+  background: transparent;
+  font: inherit;
+  text-decoration: underline;
+}
+
+.text-button {
+  width: auto;
+  height: auto;
+  margin-top: 12px;
   padding: 8px;
   color: var(--ui-link);
   background: transparent;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .capture-ready .primary {

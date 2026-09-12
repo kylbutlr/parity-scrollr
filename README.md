@@ -31,7 +31,7 @@ Parity Scrollr 2.0.0 is available as public source and can be loaded locally in 
 
 1. Open the reference page and click the toolbar icon.
 2. Enter the implementation page.
-3. Leave Compatibility mode off unless a selected site blocks framing. Select the Shopify profile only for Shopify theme-preview capture handling.
+3. Leave Compatibility mode off unless a selected site blocks framing. Select the Shopify profile only for Shopify theme-preview capture handling. Shopify Admin URLs are not comparison pages and are rejected before permission is requested.
 4. Approve access to the exact selected origins and open the comparison.
 5. Use Sync scroll, URL parity, Blink mode, responsive presets, custom dimensions, Max height, and the page history controls.
 
@@ -47,11 +47,11 @@ Use End to close the comparison and remove its session rules and unused site gra
 
 - Standard mode leaves page response headers unchanged.
 - Compatibility mode removes enforced Content Security Policy and X-Frame-Options only from the two approved origins, only for subframes in the active comparison tab. It is off by default and cannot bypass sign-in, anti-bot checks, JavaScript frame busting, or other controls.
-- Classic workflow is an explicit Settings preset for existing users. It requests persistent HTTP and HTTPS site access, enables Compatibility mode by default, includes query and fragment URL parity, remembers the replica URL, and defaults Shopify capture handling on. Runtime behavior remains limited to active comparison tabs.
+- Classic workflow is an explicit Settings preset for existing users. It requests persistent HTTP and HTTPS site access, enables Compatibility mode by default, includes query and fragment URL parity, remembers the implementation URL, and defaults Shopify capture handling on. Runtime behavior remains limited to active comparison tabs.
 
 ## Privacy and permissions
 
-The extension has no analytics, telemetry, ads, hosted storage, accounts, or extension-operated server. Launch and active comparison details use browser session storage. Settings and viewport preferences use browser local storage. The replica URL is retained only when the user enables that setting. Temporary screenshot data stays in browser memory before the resulting PNG is downloaded.
+The extension has no analytics, telemetry, ads, hosted storage, accounts, or extension-operated server. Launch and active comparison details use browser session storage. Settings and viewport preferences use browser local storage. The implementation URL is retained only when the user enables that setting. Temporary screenshot data stays in browser memory before the resulting PNG is downloaded.
 
 Compared pages still communicate with their own services according to their own policies.
 

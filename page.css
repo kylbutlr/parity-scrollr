@@ -66,6 +66,10 @@ a {
   background: var(--ui-surface);
 }
 
+.card h2:first-child {
+  margin-top: 0;
+}
+
 .setting-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

@@ -16,6 +16,19 @@
     return [...new Set(values.map(originPattern))];
   }
 
+  function unsupportedComparisonReason(value) {
+    const url = new URL(value);
+    const isShopifyAdminHost = url.hostname === "admin.shopify.com";
+    const isLegacyShopifyAdminPath =
+      url.hostname.endsWith(".myshopify.com") && /^\/admin(?:\/|$)/.test(url.pathname);
+
+    if (isShopifyAdminHost || isLegacyShopifyAdminPath) {
+      return "Shopify Admin pages are not supported. Open the storefront or theme preview in a regular tab and use that URL instead.";
+    }
+
+    return null;
+  }
+
   function originFromPattern(pattern) {
     return pattern.endsWith("/*") ? pattern.slice(0, -2) : pattern;
   }
@@ -31,6 +44,7 @@
   globalThis.ParitySiteAccess = {
     originFromPattern,
     originPattern,
+    unsupportedComparisonReason,
     uniqueOriginPatterns,
     urlMatchesPattern
   };

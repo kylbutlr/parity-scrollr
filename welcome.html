@@ -12,26 +12,31 @@
     <main class="page-shell">
       <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
       <h1>Compare two pages, side by side</h1>
-      <p class="lede">Parity Scrollr is a focused browser extension for visual comparison and responsive frontend QA. It runs only when you start a comparison.</p>
+      <p class="lede">Parity Scrollr compares a reference page and an implementation page in one browser tab. It runs only when you start a comparison.</p>
 
       <section class="card">
         <h2>Start your first comparison</h2>
         <ol>
           <li>Open the reference page and click the Parity Scrollr toolbar icon.</li>
-          <li>Enter the implementation page and choose whether Compatibility mode or a Shopify profile is needed.</li>
-          <li>Approve access to the selected site origins. The safer default removes that access when the comparison ends.</li>
-          <li>Use synchronized scrolling, responsive sizes, URL parity, Blink mode, and capture in the comparison tab.</li>
+          <li>Enter the implementation page. Leave Compatibility mode off unless a page will not load.</li>
+          <li>Approve access to the two selected sites. By default, that access is removed when the comparison ends.</li>
+          <li>Scroll either page, choose a viewport size, or download a comparison capture.</li>
         </ol>
       </section>
 
       <section class="card warning">
-        <h2>Compatibility mode changes page protections</h2>
-        <p>Some sites block framing. Compatibility mode removes enforced Content Security Policy and X-Frame-Options response headers only for the two approved origins, only for subframes, and only in the active comparison tab. It cannot bypass authentication, anti-bot checks, JavaScript frame busting, or other site security controls.</p>
+        <h2>Use Compatibility mode only when needed</h2>
+        <p>Some sites do not allow their pages to appear inside another page. Compatibility mode temporarily relaxes that framing protection for the two selected sites in the comparison tab. It cannot bypass sign-in, bot checks, or other security controls. <a href="support.html">Learn about unsupported pages</a>.</p>
       </section>
 
       <section class="card">
-        <h2>Capture needs one extra confirmation</h2>
-        <p>With safer per-site access, click the toolbar icon while the comparison tab is active to enable visible and full-page capture for that tab. Classic workflow users with persistent all-site access do not need this extra click.</p>
+        <h2>Your comparison stays local</h2>
+        <p>Parity Scrollr keeps active URLs in this browser session and downloads captures directly to your device. It does not upload captures or send comparison data to the extension developer. The pages you compare still contact their own services normally. <a href="privacy.html">Read the privacy details</a>.</p>
+      </section>
+
+      <section class="card">
+        <h2>Capture needs one confirmation</h2>
+        <p>If a capture button is disabled, click the Parity Scrollr toolbar icon while the comparison tab is active. Capture access lasts only for that comparison tab unless you enable Classic workflow.</p>
       </section>
 
       <div class="actions">
