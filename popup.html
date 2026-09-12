@@ -52,11 +52,43 @@
         <p class="privacy-note">Parity Scrollr keeps these URLs in this browser for the comparison session. <button id="open-privacy" class="inline-button" type="button">Privacy details</button></p>
 
         <p id="error" class="error" role="alert" tabindex="-1" hidden></p>
-        <button id="submit-button" class="primary" type="submit">Open comparison</button>
+        <button id="submit-button" class="primary" type="submit">Review site access</button>
       </form>
       <div class="footer-actions">
         <button id="open-how-it-works" class="text-button" type="button">How it works</button>
         <button id="open-settings" class="text-button" type="button">Settings</button>
+      </div>
+    </main>
+    <main id="access-review-view" class="access-review" hidden>
+      <div class="brand-lockup">
+        <img class="brand-icon" src="icons/icon.svg" alt="" />
+        <div id="access-review-eyebrow" class="eyebrow">Before Chrome asks</div>
+      </div>
+      <h1 id="access-review-title" tabindex="-1">Review site access</h1>
+      <p id="permission-warning" class="intro">Chrome will describe this as permission to read and change data on the selected sites. That wording describes the access an extension could use.</p>
+
+      <section class="review-card" aria-labelledby="requested-sites-title">
+        <h2 id="requested-sites-title">Sites requested</h2>
+        <ul id="requested-sites" class="site-list"></ul>
+      </section>
+
+      <section class="review-section" aria-labelledby="access-purpose-title">
+        <h2 id="access-purpose-title">What Parity Scrollr uses it for</h2>
+        <ul class="review-points">
+          <li>Load the two pages inside the comparison tab.</li>
+          <li>Coordinate scrolling and navigation between them.</li>
+        </ul>
+        <p id="compatibility-access-note" class="compatibility-review" hidden>Compatibility mode is on. It will also temporarily relax framing protection for these sites only inside the comparison tab.</p>
+      </section>
+
+      <p class="trust-note">Parity Scrollr does not read or store passwords, form entries, or cookies. It does not inspect unrelated tabs or upload page contents or captures.</p>
+      <p id="access-retention" class="retention-note"></p>
+      <p><a href="privacy.html" target="_blank">Read the complete privacy details</a></p>
+
+      <p id="access-review-error" class="error" role="alert" tabindex="-1" hidden></p>
+      <div class="review-actions">
+        <button id="back-to-setup" class="secondary" type="button">Back</button>
+        <button id="confirm-access" class="primary" type="button">Allow these sites and open comparison</button>
       </div>
     </main>
     <main id="capture-ready-view" class="capture-ready" hidden>

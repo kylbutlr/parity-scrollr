@@ -238,3 +238,82 @@ button:disabled {
 .capture-ready .primary {
   width: 100%;
 }
+
+.access-review h2 {
+  margin: 0 0 8px;
+  color: var(--ui-text);
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.review-card {
+  margin: 16px 0;
+  padding: 13px 14px;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 8px;
+  background: var(--ui-surface);
+}
+
+.site-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-list li {
+  overflow: hidden;
+  color: var(--ui-accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.review-section {
+  margin-top: 16px;
+}
+
+.review-points {
+  margin: 0;
+  padding-left: 19px;
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.compatibility-review,
+.trust-note,
+.retention-note,
+.access-review > p {
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.compatibility-review {
+  margin: 9px 0 0;
+  color: var(--ui-warning);
+}
+
+.trust-note {
+  margin: 16px 0 8px;
+}
+
+.retention-note {
+  margin: 8px 0;
+}
+
+.review-actions {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.review-actions .primary {
+  margin-top: 0;
+  padding: 0 13px;
+}

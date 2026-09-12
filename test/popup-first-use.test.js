@@ -6,6 +6,7 @@ const vm = require("node:vm");
 class FakeElement {
   constructor() {
     this.checked = false;
+    this.children = [];
     this.classList = { add() {} };
     this.disabled = false;
     this.hidden = false;
@@ -16,6 +17,14 @@ class FakeElement {
 
   addEventListener(type, listener) {
     this.listeners.set(type, listener);
+  }
+
+  appendChild(child) {
+    this.children.push(child);
+  }
+
+  replaceChildren(...children) {
+    this.children = children;
   }
 
   focus() {
@@ -33,6 +42,16 @@ class FakeElement {
     "#compatibility-mode",
     "#site-profile",
     "#setup-view",
+    "#access-review-view",
+    "#access-review-title",
+    "#access-review-eyebrow",
+    "#permission-warning",
+    "#requested-sites",
+    "#access-retention",
+    "#compatibility-access-note",
+    "#confirm-access",
+    "#back-to-setup",
+    "#access-review-error",
     "#capture-ready-view",
     "#access-note",
     "#compare-form",
@@ -87,6 +106,9 @@ class FakeElement {
     },
     crypto: { randomUUID: () => "first-use-test" },
     document: {
+      createElement() {
+        return new FakeElement();
+      },
       querySelector(selector) {
         return elements.get(selector);
       }
@@ -110,10 +132,31 @@ class FakeElement {
     elements.get("#reference-url").value,
     "https://reference.example/products/example"
   );
-  assert.match(elements.get("#access-note").textContent, /Chrome asks to read and change data/);
+  assert.match(elements.get("#access-note").textContent, /review the exact sites/i);
 
   elements.get("#replica-url").value = "https://replica.example/products/example";
   await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
+
+  assert.equal(requestedOrigins.length, 0, "the first action must not request permission");
+  assert.equal(elements.get("#setup-view").hidden, true);
+  assert.equal(elements.get("#access-review-view").hidden, false);
+  assert.equal(elements.get("#access-review-title").focused, true);
+  assert.match(elements.get("#permission-warning").textContent, /read and change data/i);
+  assert.match(elements.get("#access-retention").textContent, /removes unused site access/i);
+  assert.match(elements.get("#confirm-access").textContent, /Allow these sites/i);
+  assert.deepEqual(
+    elements.get("#requested-sites").children.map((child) => child.textContent),
+    ["reference.example", "replica.example"]
+  );
+
+  await elements.get("#back-to-setup").listeners.get("click")();
+  assert.equal(elements.get("#setup-view").hidden, false);
+  assert.equal(elements.get("#access-review-view").hidden, true);
+  assert.equal(elements.get("#replica-url").focused, true);
+
+  await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
+
+  await elements.get("#confirm-access").listeners.get("click")();
 
   assert.deepEqual(requestedOrigins, [
     "https://reference.example/*",
