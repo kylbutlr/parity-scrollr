@@ -4,15 +4,24 @@ const useCurrentButton = document.querySelector("#use-current");
 const compatibilityModeInput = document.querySelector("#compatibility-mode");
 const siteProfileInput = document.querySelector("#site-profile");
 const setupView = document.querySelector("#setup-view");
+const accessReviewView = document.querySelector("#access-review-view");
 const captureReadyView = document.querySelector("#capture-ready-view");
 const accessNote = document.querySelector("#access-note");
 const form = document.querySelector("#compare-form");
 const errorMessage = document.querySelector("#error");
 const referenceState = document.querySelector("#reference-state");
-const submitButton = document.querySelector("#submit-button");
+const accessReviewTitle = document.querySelector("#access-review-title");
+const accessReviewEyebrow = document.querySelector("#access-review-eyebrow");
+const permissionWarning = document.querySelector("#permission-warning");
+const requestedSites = document.querySelector("#requested-sites");
+const accessRetention = document.querySelector("#access-retention");
+const compatibilityAccessNote = document.querySelector("#compatibility-access-note");
+const accessReviewError = document.querySelector("#access-review-error");
+const confirmAccessButton = document.querySelector("#confirm-access");
 
 let activeTab = null;
 let settings = ParitySettings.normalize();
+let pendingReview = null;
 
 function normalizeUrl(value) {
   const trimmed = value.trim();
@@ -55,8 +64,43 @@ async function useCurrentTab() {
 
 function renderAccessNote() {
   accessNote.textContent = settings.broadHostAccess
-    ? "Next, the comparison opens in a new tab. Classic workflow keeps site access available, but Parity Scrollr acts only inside comparison tabs."
-    : "Next, Chrome asks to read and change data on these two sites. Parity Scrollr uses that access only to load and coordinate the pages you chose, then removes it when the comparison ends.";
+    ? "Classic workflow is on. Review the selected sites before the comparison opens."
+    : "Next, review the exact sites Parity Scrollr needs before Chrome asks for access.";
+}
+
+function showSetup() {
+  pendingReview = null;
+  accessReviewView.hidden = true;
+  setupView.hidden = false;
+  replicaInput.focus();
+}
+
+function showAccessReview(pair, origins) {
+  pendingReview = { origins, pair };
+  requestedSites.replaceChildren();
+  for (const origin of origins) {
+    const item = document.createElement("li");
+    item.textContent = new URL(ParitySiteAccess.originFromPattern(origin)).host;
+    requestedSites.appendChild(item);
+  }
+
+  compatibilityAccessNote.hidden = pair.options.compatibilityMode !== true;
+  if (settings.broadHostAccess) {
+    accessReviewEyebrow.textContent = "Classic workflow";
+    permissionWarning.textContent = "Classic workflow already keeps access to these sites available, so Chrome should not show a new site prompt.";
+    accessRetention.textContent = "Site access stays available until you restore safer defaults or clear local data in Settings.";
+    confirmAccessButton.textContent = "Open comparison";
+  } else {
+    accessReviewEyebrow.textContent = "Before Chrome asks";
+    permissionWarning.textContent = "Chrome will describe this as permission to read and change data on the selected sites. That wording describes the access an extension could use.";
+    accessRetention.textContent = "Parity Scrollr removes unused site access when the comparison ends.";
+    confirmAccessButton.textContent = "Allow these sites and open comparison";
+  }
+
+  accessReviewError.hidden = true;
+  setupView.hidden = true;
+  accessReviewView.hidden = false;
+  accessReviewTitle.focus();
 }
 
 function openExtensionPage(page) {
@@ -100,38 +144,59 @@ document.querySelector("#open-privacy").addEventListener("click", () => {
   openExtensionPage("privacy.html");
 });
 document.querySelector("#close-popup").addEventListener("click", () => window.close());
+document.querySelector("#back-to-setup").addEventListener("click", showSetup);
 
-form.addEventListener("submit", async (event) => {
+form.addEventListener("submit", (event) => {
   event.preventDefault();
   errorMessage.hidden = true;
-  submitButton.disabled = true;
-  submitButton.textContent = "Opening comparison…";
-  let storageKey = null;
-  let origins = [];
 
   try {
     const pair = {
       referenceUrl: normalizeUrl(referenceInput.value),
       replicaUrl: normalizeUrl(replicaInput.value)
     };
-    origins = ParitySiteAccess.uniqueOriginPatterns([
-      pair.referenceUrl,
-      pair.replicaUrl
-    ]);
-    const granted = await chrome.permissions.request({ origins });
-
-    if (!granted) {
-      throw new Error("Site access was not granted. Parity Scrollr cannot compare these pages without it.");
-    }
-
-    const comparisonId = crypto.randomUUID();
-    storageKey = `comparison_${comparisonId}`;
     pair.options = {
       broadHostAccess: settings.broadHostAccess,
       compatibilityMode: compatibilityModeInput.checked,
       includeUrlDetails: settings.includeUrlDetails,
       siteProfile: siteProfileInput.value
     };
+    const origins = ParitySiteAccess.uniqueOriginPatterns([
+      pair.referenceUrl,
+      pair.replicaUrl
+    ]);
+    showAccessReview(pair, origins);
+  } catch (error) {
+    errorMessage.textContent = error.message || "Check both URLs and try again.";
+    errorMessage.hidden = false;
+    errorMessage.focus();
+  }
+});
+
+confirmAccessButton.addEventListener("click", async () => {
+  if (!pendingReview) {
+    showSetup();
+    return;
+  }
+
+  accessReviewError.hidden = true;
+  confirmAccessButton.disabled = true;
+  confirmAccessButton.textContent = settings.broadHostAccess
+    ? "Opening comparison…"
+    : "Requesting site access…";
+  let storageKey = null;
+  const { origins, pair } = pendingReview;
+
+  try {
+    if (!settings.broadHostAccess) {
+      const granted = await chrome.permissions.request({ origins });
+      if (!granted) {
+        throw new Error("Chrome did not grant access. No comparison was opened.");
+      }
+    }
+
+    const comparisonId = crypto.randomUUID();
+    storageKey = `comparison_${comparisonId}`;
     pair.origins = origins;
     pair.createdAt = Date.now();
 
@@ -146,18 +211,20 @@ form.addEventListener("submit", async (event) => {
     });
     window.close();
   } catch (error) {
-    if (storageKey && origins.length) {
+    if (storageKey) {
       await chrome.runtime.sendMessage({
         type: "CANCEL_COMPARISON_LAUNCH",
         storageKey,
         origins
       }).catch(() => {});
     }
-    errorMessage.textContent = error.message || "Check both URLs and try again.";
-    errorMessage.hidden = false;
-    errorMessage.focus();
-    submitButton.disabled = false;
-    submitButton.textContent = "Open comparison";
+    accessReviewError.textContent = error.message || "The comparison could not be opened.";
+    accessReviewError.hidden = false;
+    accessReviewError.focus();
+    confirmAccessButton.disabled = false;
+    confirmAccessButton.textContent = settings.broadHostAccess
+      ? "Open comparison"
+      : "Allow these sites and open comparison";
   }
 });
 

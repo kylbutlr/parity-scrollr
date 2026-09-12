@@ -11,11 +11,21 @@ function read(relativePath) {
 const popup = read("popup.html");
 const popupScript = read("popup.js");
 assert.match(popup, /Next, Chrome asks|id="access-note"/);
+assert.match(popup, /id="submit-button"[^>]*>Review site access</);
+assert.match(popup, /id="access-review-view"[^>]*hidden/);
+assert.match(popup, /id="access-review-title"[^>]*tabindex="-1"/);
+assert.match(popup, /id="requested-sites"/);
+assert.match(popup, /id="confirm-access"[^>]*>Allow these sites and open comparison</);
 assert.match(popup, /<details class="context-help">/);
 assert.match(popup, /id="open-privacy"/);
 assert.match(popup, /id="reference-state"[^>]*hidden/);
 assert.match(popup, /id="error"[^>]*role="alert"[^>]*tabindex="-1"/);
 assert.match(popupScript, /errorMessage\.focus\(\)/);
+assert.ok(
+  popupScript.indexOf("showAccessReview(pair, origins)") <
+    popupScript.indexOf('confirmAccessButton.addEventListener("click"'),
+  "site access review must precede the permission request action"
+);
 
 const comparison = read("compare.html");
 const comparisonScript = read("compare.js");

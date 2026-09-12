@@ -25,10 +25,11 @@ All extension data stays in the browser unless the compared pages themselves com
 ## Reviewer notes
 
 1. Click the toolbar icon on a normal HTTP or HTTPS page.
-2. Enter a second page and approve the two exact site origins.
-3. Verify standard comparison, synchronized scroll, responsive presets, custom size, URL parity, and Blink mode.
-4. Click the toolbar icon again in the comparison tab to enable capture, then test visible and full-page PNG downloads.
-5. Use a framing-restricted test page to verify standard failure and explicit Compatibility mode success.
-6. Click End and confirm temporary site grants and session header rules are removed.
+2. Enter a second page and choose **Review site access**. Confirm that the extension names the two exact domains and explains the request before Chrome shows its permission prompt.
+3. Choose **Allow these sites and open comparison**, then approve the two exact site origins in Chrome.
+4. Verify standard comparison, synchronized scroll, responsive presets, custom size, URL parity, and Blink mode.
+5. Click the toolbar icon again in the comparison tab to enable capture, then test visible and full-page PNG downloads.
+6. Use a framing-restricted test page to verify standard failure and explicit Compatibility mode success.
+7. Click End and confirm temporary site grants and session header rules are removed.
 
 Use the justifications in [permissions.md](permissions.md) for the Privacy practices and permission justification fields. Privacy-policy URL and support contact remain pending approval.

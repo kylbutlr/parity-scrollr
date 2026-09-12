@@ -6,6 +6,7 @@ const vm = require("node:vm");
 class FakeElement {
   constructor() {
     this.checked = false;
+    this.children = [];
     this.classList = { add() {} };
     this.disabled = false;
     this.hidden = false;
@@ -16,6 +17,14 @@ class FakeElement {
 
   addEventListener(type, listener) {
     this.listeners.set(type, listener);
+  }
+
+  appendChild(child) {
+    this.children.push(child);
+  }
+
+  replaceChildren(...children) {
+    this.children = children;
   }
 
   focus() {}
@@ -56,6 +65,16 @@ for (const url of [
     "#compatibility-mode",
     "#site-profile",
     "#setup-view",
+    "#access-review-view",
+    "#access-review-title",
+    "#access-review-eyebrow",
+    "#permission-warning",
+    "#requested-sites",
+    "#access-retention",
+    "#compatibility-access-note",
+    "#confirm-access",
+    "#back-to-setup",
+    "#access-review-error",
     "#capture-ready-view",
     "#access-note",
     "#compare-form",
@@ -104,6 +123,9 @@ for (const url of [
     },
     crypto: { randomUUID: () => "admin-test" },
     document: {
+      createElement() {
+        return new FakeElement();
+      },
       querySelector(selector) {
         return elements.get(selector);
       }

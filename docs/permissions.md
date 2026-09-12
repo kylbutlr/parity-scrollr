@@ -10,6 +10,12 @@ Verified against Parity Scrollr 2.0.0.
 | `declarativeNetRequestWithHostAccess` | Enables optional Compatibility mode for sites that refuse framing | Only when the user enables Compatibility mode | Session rules match the selected origin, exact tab ID, and `sub_frame` only |
 | Optional `<all_urls>` host access | Provides a capability ceiling for exact per-site grants and the optional Classic workflow, including the browser's broad-access path for capture | Exact HTTP or HTTPS origins are requested at comparison start; all-site access is requested only from Settings | Per-site grants are released after use unless persistent all-site access is enabled; comparison inputs still reject unsupported schemes |
 
+## What users see before Chrome asks
+
+Before requesting site access, Parity Scrollr shows a separate review step naming the exact selected domains, why access is required, what the extension does not inspect or upload, and when the grant is removed. The first button only opens this review. Site access is requested only after the user chooses **Allow these sites and open comparison**.
+
+Chrome may describe an exact per-site grant as permission to read and change data on the selected site. That is Chrome's capability warning. Parity Scrollr uses the grant only in the user-started comparison so it can load the two selected pages and coordinate scrolling and navigation inside their comparison frames.
+
 ## Response-header behavior
 
 Standard mode leaves response headers unchanged. Compatibility mode removes only the enforced `Content-Security-Policy` and `X-Frame-Options` response headers. It does not remove `Content-Security-Policy-Report-Only`. Each rule is limited to one selected origin, one active comparison tab, and subframe responses. Rules are removed on explicit End, tab close, navigation away, initialization failure, and service-worker reconciliation.
