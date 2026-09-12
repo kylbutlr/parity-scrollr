@@ -14,6 +14,10 @@ const modeIndicator = document.querySelector("#mode-indicator");
 const captureStatus = document.querySelector("#capture-status");
 const loading = document.querySelector("#loading");
 const fatalError = document.querySelector("#fatal-error");
+const fatalErrorMessage = document.querySelector("#fatal-error-message");
+const helpButton = document.querySelector("#help-button");
+const quickGuide = document.querySelector("#quick-guide");
+const dismissGuideButton = document.querySelector("#dismiss-guide-button");
 const viewportPreset = document.querySelector("#viewport-preset");
 const viewportWidthInput = document.querySelector("#viewport-width");
 const viewportHeightInput = document.querySelector("#viewport-height");
@@ -47,7 +51,7 @@ const frameStatuses = new Map([
   ],
   [
     replicaFrame,
-    { element: replicaStatus, message: replicaStatusMessage, label: "replica", timer: 0 }
+    { element: replicaStatus, message: replicaStatusMessage, label: "implementation", timer: 0 }
   ]
 ]);
 
@@ -150,7 +154,7 @@ function setFrameStatus(frame, state) {
 
   status.element.hidden = false;
   if (state === "warning") {
-    status.message.textContent = `Still waiting for ${status.label}. The site may be blocking embedding.`;
+    status.message.textContent = `${status.label[0].toUpperCase()}${status.label.slice(1)} is taking longer than expected. If it stays blank, restart with Compatibility mode.`;
     return;
   }
 
@@ -168,7 +172,7 @@ function setReplicaPreview(showReplica) {
   comparison.classList.toggle("is-showing-replica", active);
   blinkRevealButton.classList.toggle("is-active", active);
   blinkRevealButton.setAttribute("aria-pressed", String(active));
-  blinkRevealButton.textContent = active ? "Showing replica" : "Hold B · Replica";
+  blinkRevealButton.textContent = active ? "Showing implementation" : "Hold B · Implementation";
 }
 
 function setBlinkMode(enabled) {
@@ -304,6 +308,29 @@ urlParityToggle.addEventListener("change", () => {
   if (!urlParityToggle.checked) {
     pendingMirroredFrames.clear();
   }
+  urlDetailsToggle.disabled = !urlParityToggle.checked;
+});
+
+function setGuideOpen(open, returnFocus = false) {
+  quickGuide.hidden = !open;
+  helpButton.setAttribute("aria-expanded", String(open));
+  if (!open && returnFocus) {
+    helpButton.focus();
+  }
+}
+
+helpButton.addEventListener("click", () => {
+  if (quickGuide.hidden) {
+    setGuideOpen(true);
+    return;
+  }
+  setGuideOpen(false);
+  chrome.storage.local.set({ comparisonGuideDismissed: true }).catch(() => {});
+});
+
+dismissGuideButton.addEventListener("click", async () => {
+  setGuideOpen(false, true);
+  await chrome.storage.local.set({ comparisonGuideDismissed: true });
 });
 
 new ResizeObserver(updateViewportFrames).observe(document.querySelector("#comparison"));
@@ -550,7 +577,7 @@ async function captureComparison() {
   } catch (error) {
     captureButton.textContent = "Capture failed";
     captureButton.title = error.message;
-    captureStatus.textContent = `Capture failed: ${error.message}`;
+    captureStatus.textContent = `Capture failed: ${error.message} Keep this tab active and try again.`;
   }
 
   setTimeout(() => {
@@ -895,7 +922,7 @@ async function runFullPageCapture() {
       outcomeTitle = "Full-page capture cancelled.";
     } else {
       outcomeTitle = error.message;
-      captureStatus.textContent = `Full-page capture failed: ${error.message}`;
+      captureStatus.textContent = `Full-page capture failed: ${error.message} Keep this tab active and try again.`;
     }
   } finally {
     fullPageButton.disabled = true;
@@ -963,6 +990,13 @@ document.querySelector("#settings-button").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
 
+document.querySelector("#fatal-end-button").addEventListener("click", async () => {
+  await chrome.runtime.sendMessage({ type: "END_COMPARISON" }).catch(() => {});
+  if (comparisonTabId) {
+    chrome.tabs.remove(comparisonTabId);
+  }
+});
+
 document.querySelector("#end-button").addEventListener("click", async () => {
   await chrome.runtime.sendMessage({ type: "END_COMPARISON" }).catch(() => {});
   if (comparisonTabId) {
@@ -971,6 +1005,13 @@ document.querySelector("#end-button").addEventListener("click", async () => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !quickGuide.hidden && !fullPageCaptureState) {
+    event.preventDefault();
+    setGuideOpen(false, true);
+    chrome.storage.local.set({ comparisonGuideDismissed: true }).catch(() => {});
+    return;
+  }
+
   if (fullPageCaptureState) {
     if (event.key === "Escape") {
       fullPageCaptureState.cancelled = true;
@@ -1020,7 +1061,7 @@ async function initialize() {
     storageKey = `comparison_${comparisonId}`;
     const [stored, preferences] = await Promise.all([
       chrome.storage.session.get(storageKey),
-      chrome.storage.local.get(["viewportSize", "maxHeight"])
+      chrome.storage.local.get(["viewportSize", "maxHeight", "comparisonGuideDismissed"])
     ]);
     storedPair = stored[storageKey];
 
@@ -1041,9 +1082,10 @@ async function initialize() {
     await chrome.storage.session.remove(storageKey);
 
     urlDetailsToggle.checked = storedPair.options?.includeUrlDetails === true;
+    urlDetailsToggle.disabled = true;
     modeIndicator.textContent = result.session.compatibilityMode
-      ? "Compatibility mode: framing headers adjusted for these two sites in this tab"
-      : "Standard mode: page response headers are unchanged";
+      ? "Compatibility mode is on for these two sites in this tab"
+      : "Standard mode: site protections are unchanged";
     await refreshCaptureAccess();
 
     maxHeightToggle.checked = preferences.maxHeight === true;
@@ -1065,6 +1107,9 @@ async function initialize() {
     setPair(storedPair);
     await injectComparisonFrames();
     loading.hidden = true;
+    if (preferences.comparisonGuideDismissed !== true) {
+      setGuideOpen(true);
+    }
   } catch (error) {
     if (comparisonTabId) {
       await chrome.runtime.sendMessage({ type: "END_COMPARISON" }).catch(() => {});
@@ -1077,7 +1122,7 @@ async function initialize() {
       }).catch(() => {});
     }
     loading.hidden = true;
-    fatalError.textContent = error.message;
+    fatalErrorMessage.textContent = error.message;
     fatalError.hidden = false;
   }
 }

@@ -47,11 +47,11 @@ Use End to close the comparison and remove its session rules and unused site gra
 
 - Standard mode leaves page response headers unchanged.
 - Compatibility mode removes enforced Content Security Policy and X-Frame-Options only from the two approved origins, only for subframes in the active comparison tab. It is off by default and cannot bypass sign-in, anti-bot checks, JavaScript frame busting, or other controls.
-- Classic workflow is an explicit Settings preset for existing users. It requests persistent HTTP and HTTPS site access, enables Compatibility mode by default, includes query and fragment URL parity, remembers the replica URL, and defaults Shopify capture handling on. Runtime behavior remains limited to active comparison tabs.
+- Classic workflow is an explicit Settings preset for existing users. It requests persistent HTTP and HTTPS site access, enables Compatibility mode by default, includes query and fragment URL parity, remembers the implementation URL, and defaults Shopify capture handling on. Runtime behavior remains limited to active comparison tabs.
 
 ## Privacy and permissions
 
-The extension has no analytics, telemetry, ads, hosted storage, accounts, or extension-operated server. Launch and active comparison details use browser session storage. Settings and viewport preferences use browser local storage. The replica URL is retained only when the user enables that setting. Temporary screenshot data stays in browser memory before the resulting PNG is downloaded.
+The extension has no analytics, telemetry, ads, hosted storage, accounts, or extension-operated server. Launch and active comparison details use browser session storage. Settings and viewport preferences use browser local storage. The implementation URL is retained only when the user enables that setting. Temporary screenshot data stays in browser memory before the resulting PNG is downloaded.
 
 Compared pages still communicate with their own services according to their own policies.
 

@@ -12,29 +12,29 @@
     <main class="page-shell">
       <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
       <h1>Settings</h1>
-      <p class="lede">Safer defaults request only the two sites in each comparison. You can enable the classic workflow when speed matters more than repeated permission prompts. End active comparisons before removing persistent site access.</p>
+      <p class="lede">By default, Parity Scrollr asks for access only to the two sites you compare. Classic workflow keeps site access available so repeat comparisons need fewer prompts.</p>
 
       <section class="card warning" aria-labelledby="classic-title">
         <h2 id="classic-title">Classic workflow</h2>
-        <p>Restores the previous low-friction experience: persistent access to all HTTP and HTTPS sites, compatibility mode on by default, full path/query/fragment URL parity, remembered replica URLs, and Shopify preview-bar handling.</p>
+        <p>Keeps the previous low-friction experience: access to all websites stays available, Compatibility mode starts on, URL details are mirrored, implementation URLs are remembered, and the Shopify profile is selected.</p>
         <button id="enable-classic" class="primary" type="button">Enable classic workflow</button>
       </section>
 
       <section class="card" aria-label="Individual settings">
         <label class="setting-row" for="broad-host-access">
-          <span><strong>Persistent access to all sites</strong><small>Avoids per-comparison site prompts and the extra capture authorization click. Parity Scrollr still injects code and changes headers only inside active comparison tabs.</small></span>
+          <span><strong>Keep access to all sites</strong><small>Avoids per-comparison permission prompts and the extra capture confirmation. Parity Scrollr still acts only inside comparison tabs you start.</small></span>
           <input id="broad-host-access" type="checkbox" />
         </label>
         <label class="setting-row" for="default-compatibility-mode">
-          <span><strong>Compatibility mode by default</strong><small>Removes X-Frame-Options and the full enforced Content Security Policy only for selected sites inside active comparison tabs.</small></span>
+          <span><strong>Compatibility mode by default</strong><small>Helps some pages load inside the comparison by temporarily relaxing their framing protection. It applies only to the selected sites in the active comparison tab.</small></span>
           <input id="default-compatibility-mode" type="checkbox" />
         </label>
         <label class="setting-row" for="include-url-details">
-          <span><strong>Mirror query parameters and fragments</strong><small>Matches the previous URL parity behavior. These URL parts can contain preview or signed-link tokens and may be sent to the other selected site.</small></span>
+          <span><strong>Mirror query and page details</strong><small>When URL parity is on, also copies everything after ? or #. These details can contain preview or signed-link tokens and may be sent to the other selected site.</small></span>
           <input id="include-url-details" type="checkbox" />
         </label>
         <label class="setting-row" for="remember-replica-url">
-          <span><strong>Remember the complete replica URL</strong><small>Stores it only in this browser. Leave off to avoid retaining paths, queries, and fragments after a comparison.</small></span>
+          <span><strong>Remember the complete implementation URL</strong><small>Stores it only in this browser. Leave off to avoid retaining paths, queries, and fragments after a comparison.</small></span>
           <input id="remember-replica-url" type="checkbox" />
         </label>
         <label class="setting-row" for="shopify-profile">
@@ -43,10 +43,16 @@
         </label>
       </section>
 
+      <section id="data-controls" class="card" aria-labelledby="data-title">
+        <h2 id="data-title">Your data</h2>
+        <p>Active comparison URLs are temporary. Preferences and an optional implementation URL can be saved in this browser. Captures download to your device and are not uploaded by Parity Scrollr. Compared pages still contact their own services normally.</p>
+        <p><a href="privacy.html">Read the complete privacy details</a></p>
+      </section>
+
       <div class="actions">
         <button id="save-settings" class="primary" type="button">Save settings</button>
         <button id="restore-safer" type="button">Restore safer defaults</button>
-        <button id="clear-data" type="button">Clear saved comparison data</button>
+        <button id="clear-data" type="button">Clear all local data</button>
       </div>
       <p id="settings-status" class="status" role="status" aria-live="polite"></p>
 

@@ -16,7 +16,7 @@
         <span>Parity Scrollr</span>
       </div>
       <div class="viewport-controls" aria-label="Shared viewport size">
-        <select id="viewport-preset" aria-label="Viewport preset">
+        <select id="viewport-preset" aria-label="Viewport preset" aria-describedby="viewport-help">
           <option value="320x568">Small Mobile · 320×568</option>
           <option value="375x667">iPhone SE · 375×667</option>
           <option value="390x844">iPhone 14 · 390×844</option>
@@ -44,34 +44,34 @@
           <input id="max-height-toggle" type="checkbox" />
           <span>Max height</span>
         </label>
-        <span id="scale-indicator" class="scale-indicator" title="Visual scale used to fit each viewport">100%</span>
+        <span id="scale-indicator" class="scale-indicator" title="Visual scale used to fit each viewport" aria-describedby="scale-help">100%</span>
       </div>
       <div class="controls">
         <label class="toggle" title="Keyboard shortcut: S">
           <input id="sync-toggle" type="checkbox" checked />
           <span>Sync scroll</span>
         </label>
-        <label class="toggle" title="Mirror each navigation to the same path on the other site's origin">
-          <input id="url-parity-toggle" type="checkbox" />
+        <label class="toggle" title="Mirror each navigation to the same path on the other site">
+          <input id="url-parity-toggle" type="checkbox" aria-describedby="url-parity-help" />
           <span>URL parity</span>
         </label>
         <label class="toggle" title="Also copy query parameters and fragments when URL parity is enabled">
-          <input id="url-details-toggle" type="checkbox" />
+          <input id="url-details-toggle" type="checkbox" aria-describedby="url-details-help" />
           <span>Query + hash</span>
         </label>
         <label class="toggle" title="Stack both pages for rapid visual comparison">
-          <input id="blink-toggle" type="checkbox" />
+          <input id="blink-toggle" type="checkbox" aria-describedby="blink-help" />
           <span>Blink mode</span>
         </label>
         <button
           id="blink-reveal-button"
           class="blink-reveal-button"
           type="button"
-          title="Hold this button or the B key to show the replica"
+          title="Hold this button or the B key to show the implementation"
           aria-pressed="false"
           hidden
         >
-          Hold B · Replica
+          Hold B · Implementation
         </button>
         <div class="history-controls" aria-label="Reference site history">
           <button id="reference-back-button" type="button" title="Go back on the reference site only">← Back</button>
@@ -81,18 +81,46 @@
         <button id="swap-button" type="button">Swap sides</button>
         <button id="reload-button" type="button">Reload both</button>
         <div class="capture-controls" aria-label="Capture comparison">
-          <button id="capture-button" type="button" title="Download the visible comparison as a PNG">Capture view</button>
-          <button id="full-page-button" type="button" title="Scroll and stitch both entire pages into one PNG" aria-live="polite">Capture full page</button>
+          <button id="capture-button" type="button" title="Download the visible comparison as a PNG" aria-describedby="capture-help">Capture view</button>
+          <button id="full-page-button" type="button" title="Scroll and stitch both entire pages into one PNG" aria-describedby="full-capture-help" aria-live="polite">Capture full page</button>
         </div>
         <button id="settings-button" type="button">Settings</button>
         <button id="end-button" type="button">End</button>
       </div>
     </header>
 
-    <div class="session-bar" role="status">
+    <div class="session-bar">
       <span id="mode-indicator"></span>
-      <span id="capture-status"></span>
+      <div class="session-actions">
+        <span id="capture-status" role="status" aria-live="polite"></span>
+        <button id="help-button" type="button" aria-expanded="false" aria-controls="quick-guide">Help</button>
+      </div>
     </div>
+
+    <span id="viewport-help" class="visually-hidden">Sets the shared viewport size for both pages.</span>
+    <span id="scale-help" class="visually-hidden">Shows how much the selected viewport is visually scaled to fit each pane.</span>
+    <span id="url-parity-help" class="visually-hidden">When enabled, navigation on either page opens the same path on the other site.</span>
+    <span id="url-details-help" class="visually-hidden">When URL parity is enabled, also copies query parameters and page fragments, which can contain private tokens.</span>
+    <span id="blink-help" class="visually-hidden">Stacks both pages. Hold the B key or the implementation button to reveal the implementation.</span>
+    <span id="capture-help" class="visually-hidden">Downloads the currently visible comparison as one PNG file.</span>
+    <span id="full-capture-help" class="visually-hidden">Scrolls both pages and downloads a stitched PNG. Keep this tab active until it finishes.</span>
+
+    <aside id="quick-guide" class="quick-guide" aria-labelledby="quick-guide-title" hidden>
+      <div class="quick-guide-heading">
+        <div>
+          <div class="guide-eyebrow">First comparison</div>
+          <h2 id="quick-guide-title">Start with scroll and viewport size</h2>
+        </div>
+        <button id="dismiss-guide-button" class="guide-close" type="button" aria-label="Dismiss first comparison guide">Close</button>
+      </div>
+      <ul>
+        <li>Scroll either page. Sync scroll keeps the other page at the same position.</li>
+        <li>Choose a viewport preset or enter a custom page width and height.</li>
+        <li>Turn on URL parity only when both sites use matching paths.</li>
+      </ul>
+      <p>Capture buttons download PNG files to your device. If capture is disabled, click the Parity Scrollr toolbar icon once in this tab.</p>
+      <p class="guide-privacy">Comparison URLs stay in this browser session. <a href="privacy.html" target="_blank">Privacy details</a></p>
+    </aside>
 
     <main id="comparison" class="comparison" aria-label="Side-by-side website comparison">
       <section id="reference-pane" class="pane">
@@ -116,16 +144,16 @@
 
       <section id="replica-pane" class="pane">
         <div class="pane-header">
-          <span class="pane-label">REPLICA</span>
+          <span class="pane-label">IMPLEMENTATION</span>
           <span id="replica-address" class="address"></span>
           <button id="replica-open" class="open-button" type="button">Open tab</button>
         </div>
         <div id="replica-stage" class="frame-stage">
           <div id="replica-shell" class="frame-shell">
-            <iframe id="replica-frame" title="Replica site" sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            <iframe id="replica-frame" title="Implementation site" sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             <div id="replica-status" class="frame-status" role="status" aria-live="polite">
               <span class="status-spinner" aria-hidden="true"></span>
-              <span id="replica-status-message">Loading replica…</span>
+              <span id="replica-status-message">Loading implementation…</span>
             </div>
           </div>
         </div>
@@ -133,7 +161,17 @@
     </main>
 
     <div id="loading" class="loading" role="status">Preparing comparison…</div>
-    <div id="fatal-error" class="fatal-error" role="alert" hidden></div>
+    <div id="fatal-error" class="fatal-error" role="alert" hidden>
+      <div class="fatal-card">
+        <h1>Comparison could not start</h1>
+        <p id="fatal-error-message"></p>
+        <p>Return to a regular website and start a new comparison from the extension toolbar button.</p>
+        <div class="fatal-actions">
+          <a href="support.html" target="_blank">Open troubleshooting</a>
+          <button id="fatal-end-button" type="button">Close this tab</button>
+        </div>
+      </div>
+    </div>
     <script src="settings-data.js"></script>
     <script src="viewport-sizing.js"></script>
     <script src="url-parity.js"></script>
