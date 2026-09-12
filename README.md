@@ -31,7 +31,7 @@ Parity Scrollr 2.0.0 is available as public source and can be loaded locally in 
 
 1. Open the reference page and click the toolbar icon.
 2. Enter the implementation page.
-3. Leave Compatibility mode off unless a selected site blocks framing. Select the Shopify profile only for Shopify theme-preview capture handling.
+3. Leave Compatibility mode off unless a selected site blocks framing. Select the Shopify profile only for Shopify theme-preview capture handling. Shopify Admin URLs are not comparison pages and are rejected before permission is requested.
 4. Approve access to the exact selected origins and open the comparison.
 5. Use Sync scroll, URL parity, Blink mode, responsive presets, custom dimensions, Max height, and the page history controls.
 

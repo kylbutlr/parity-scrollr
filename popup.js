@@ -25,20 +25,29 @@ function normalizeUrl(value) {
   if (url.username || url.password) {
     throw new Error("URLs containing embedded usernames or passwords are not supported.");
   }
+  const unsupportedReason = ParitySiteAccess.unsupportedComparisonReason(url.href);
+  if (unsupportedReason) {
+    throw new Error(unsupportedReason);
+  }
 
   return url.href;
 }
 
 async function useCurrentTab() {
   const url = activeTab?.url || "";
-  if (url.startsWith("http://") || url.startsWith("https://")) {
+  const isWebsite = url.startsWith("http://") || url.startsWith("https://");
+  const unsupportedReason = isWebsite
+    ? ParitySiteAccess.unsupportedComparisonReason(url)
+    : null;
+  if (isWebsite && !unsupportedReason) {
     referenceInput.value = url;
     referenceState.hidden = true;
     useCurrentButton.disabled = false;
     return;
   }
 
-  referenceState.textContent = "This browser page cannot be selected automatically. Enter a regular website URL instead.";
+  referenceInput.value = "";
+  referenceState.textContent = unsupportedReason || "This browser page cannot be selected automatically. Enter a regular website URL instead.";
   referenceState.classList.add("is-warning");
   referenceState.hidden = false;
   useCurrentButton.disabled = true;
@@ -47,7 +56,7 @@ async function useCurrentTab() {
 function renderAccessNote() {
   accessNote.textContent = settings.broadHostAccess
     ? "Next, the comparison opens in a new tab. Classic workflow keeps site access available, but Parity Scrollr acts only inside comparison tabs."
-    : "Next, Chrome asks for access to these two sites. If approved, the comparison opens in a new tab and access is removed when it ends.";
+    : "Next, Chrome asks to read and change data on these two sites. Parity Scrollr uses that access only to load and coordinate the pages you chose, then removes it when the comparison ends.";
 }
 
 function openExtensionPage(page) {

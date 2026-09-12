@@ -18,11 +18,34 @@ class FakeElement {
     this.listeners.set(type, listener);
   }
 
-  focus() {
-    this.focused = true;
-  }
-
+  focus() {}
   select() {}
+}
+
+const root = path.join(__dirname, "..");
+const siteAccessContext = { URL };
+vm.runInNewContext(
+  fs.readFileSync(path.join(root, "site-access.js"), "utf8"),
+  siteAccessContext,
+  { filename: "site-access.js" }
+);
+
+for (const url of [
+  "https://admin.shopify.com/store/example/themes",
+  "https://example.myshopify.com/admin/themes"
+]) {
+  assert.match(
+    siteAccessContext.ParitySiteAccess.unsupportedComparisonReason(url),
+    /Shopify Admin/
+  );
+}
+
+for (const url of [
+  "https://example.com/",
+  "https://example.myshopify.com/",
+  "https://example.myshopify.com/?preview_theme_id=123"
+]) {
+  assert.equal(siteAccessContext.ParitySiteAccess.unsupportedComparisonReason(url), null);
 }
 
 (async () => {
@@ -46,18 +69,15 @@ class FakeElement {
   ];
   const elements = new Map(selectors.map((selector) => [selector, new FakeElement()]));
   elements.get("#site-profile").value = "none";
-  const sessionWrites = [];
-  const requestedOrigins = [];
-  const openedTabs = [];
-  let popupClosed = false;
+  let permissionRequestCount = 0;
 
   const context = {
     URL,
     chrome: {
       permissions: {
         contains: async () => false,
-        request: async ({ origins }) => {
-          requestedOrigins.push(...origins);
+        request: async () => {
+          permissionRequestCount += 1;
           return true;
         }
       },
@@ -72,33 +92,25 @@ class FakeElement {
           remove: async () => {},
           set: async () => {}
         },
-        session: {
-          set: async (value) => {
-            sessionWrites.push(value);
-          }
-        }
+        session: { set: async () => {} }
       },
       tabs: {
-        create: async ({ url }) => {
-          openedTabs.push(url);
-        },
-        query: async () => [{ id: 7, url: "https://reference.example/products/example" }]
+        create: async () => {},
+        query: async () => [{
+          id: 7,
+          url: "https://admin.shopify.com/store/example/themes"
+        }]
       }
     },
-    crypto: { randomUUID: () => "first-use-test" },
+    crypto: { randomUUID: () => "admin-test" },
     document: {
       querySelector(selector) {
         return elements.get(selector);
       }
     },
-    window: {
-      close() {
-        popupClosed = true;
-      }
-    }
+    window: { close() {} }
   };
 
-  const root = path.join(__dirname, "..");
   for (const script of ["settings-data.js", "site-access.js", "popup.js"]) {
     vm.runInNewContext(fs.readFileSync(path.join(root, script), "utf8"), context, {
       filename: script
@@ -106,34 +118,22 @@ class FakeElement {
   }
   await new Promise((resolve) => setImmediate(resolve));
 
-  assert.equal(
-    elements.get("#reference-url").value,
-    "https://reference.example/products/example"
-  );
-  assert.match(elements.get("#access-note").textContent, /Chrome asks to read and change data/);
+  assert.equal(elements.get("#reference-url").value, "");
+  assert.match(elements.get("#reference-state").textContent, /Shopify Admin/);
+  assert.equal(elements.get("#use-current").disabled, true);
 
-  elements.get("#replica-url").value = "https://replica.example/products/example";
+  elements.get("#reference-url").value = "https://admin.shopify.com/store/example/themes";
+  elements.get("#replica-url").value = "https://preview.example.com/";
   await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
 
-  assert.deepEqual(requestedOrigins, [
-    "https://reference.example/*",
-    "https://replica.example/*"
-  ]);
-  assert.equal(sessionWrites.length, 1);
   assert.equal(
-    sessionWrites[0]["comparison_first-use-test"].referenceUrl,
-    "https://reference.example/products/example"
+    permissionRequestCount,
+    0,
+    "Shopify Admin must be rejected before chrome.permissions.request"
   );
-  assert.equal(
-    openedTabs.at(-1),
-    "chrome-extension://test/compare.html?id=first-use-test"
-  );
-  assert.equal(popupClosed, true);
+  assert.match(elements.get("#error").textContent, /Shopify Admin/);
 
-  await elements.get("#open-privacy").listeners.get("click")();
-  assert.equal(openedTabs.at(-1), "chrome-extension://test/privacy.html");
-
-  console.log("popup first-use permission and launch flow: PASS");
+  console.log("Shopify Admin permission prompt regression: PASS");
 })().catch((error) => {
   console.error(error.message);
   process.exitCode = 1;

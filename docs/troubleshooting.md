@@ -2,6 +2,7 @@
 
 ## Embedding
 
+- Shopify Admin URLs are not supported and are blocked before site access is requested. Open the storefront or theme preview in a regular tab and start the comparison there.
 - Standard mode respects framing headers. Restart with Compatibility mode only when you understand its narrower but weaker protection model.
 - Compatibility mode cannot bypass authentication, anti-bot challenges, JavaScript frame busting, browser-owned pages, extension pages, or other security controls.
 - Redirects to a different origin are not automatically granted. End the comparison and start a new one with the final URL.
