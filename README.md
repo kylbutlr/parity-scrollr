@@ -4,7 +4,7 @@ Compare reference and implementation pages side by side with synchronized scroll
 
 Parity Scrollr is a local-first Chrome and Microsoft Edge extension for visual comparison and responsive frontend QA. It does not automate visual-diff scoring, upload screenshots, create accounts, analyze background browsing, or bypass authentication and site security.
 
-[Product overview](https://kylbutlr.com/apps/parity-scrollr) · [Report an issue](https://github.com/kylbutlr/parity-scrollr/issues)
+[Report an issue](https://github.com/kylbutlr/parity-scrollr/issues)
 
 ## Status
 
