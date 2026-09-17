@@ -493,23 +493,6 @@ document.querySelector("#swap-button").addEventListener("click", () => {
   });
 });
 
-async function injectComparisonFrames() {
-  if (!comparisonTabId) {
-    return;
-  }
-  await chrome.scripting.executeScript({
-    target: { tabId: comparisonTabId, allFrames: true },
-    files: ["scroll-sync.js"],
-    injectImmediately: true
-  });
-}
-
-for (const frame of [referenceFrame, replicaFrame]) {
-  frame.addEventListener("load", () => {
-    injectComparisonFrames().catch(() => setFrameStatus(frame, "warning"));
-  });
-}
-
 function renderCaptureAccess() {
   captureButton.disabled = !captureAccess;
   fullPageButton.disabled = !captureAccess;
@@ -1105,7 +1088,6 @@ async function initialize() {
     }
 
     setPair(storedPair);
-    await injectComparisonFrames();
     loading.hidden = true;
     if (preferences.comparisonGuideDismissed !== true) {
       setGuideOpen(true);

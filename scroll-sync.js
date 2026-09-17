@@ -1,4 +1,10 @@
 (() => {
+  const INSTALLATION_KEY = "__parityScrollrSyncInstalled";
+  if (globalThis[INSTALLATION_KEY]) {
+    return;
+  }
+  globalThis[INSTALLATION_KEY] = true;
+
   const CHANNEL = "parity-scrollr-sync-v1";
 
   let cachedPrimaryScroller = null;

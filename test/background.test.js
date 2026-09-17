@@ -12,6 +12,7 @@ const grantedOrigins = new Set([
   "https://replica.example/*"
 ]);
 let sessionRules = [];
+let registeredContentScripts = [{ id: "comparison-frame-999" }];
 const removedPermissionSets = [];
 
 function storageArea(data) {
@@ -49,6 +50,20 @@ const chrome = {
     onInstalled: { addListener(listener) { listeners.installed = listener; } },
     onMessage: { addListener(listener) { listeners.message = listener; } }
   },
+  scripting: {
+    async getRegisteredContentScripts(filter = {}) {
+      if (!filter.ids) return registeredContentScripts;
+      return registeredContentScripts.filter((script) => filter.ids.includes(script.id));
+    },
+    async registerContentScripts(scripts) {
+      registeredContentScripts.push(...scripts);
+    },
+    async unregisterContentScripts({ ids }) {
+      registeredContentScripts = registeredContentScripts.filter(
+        (script) => !ids.includes(script.id)
+      );
+    }
+  },
   storage: { local: storageArea(localData), session: storageArea(sessionData) },
   tabs: {
     async create() {},
@@ -80,6 +95,11 @@ function sendMessage(message, sender) {
 
 (async () => {
   await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(
+    registeredContentScripts.length,
+    0,
+    "service-worker reconciliation must remove orphan frame injection"
+  );
   const tabId = 73;
   const sender = { frameId: 0, tab: { id: tabId }, url: "chrome-extension://parity/compare.html?id=test" };
   const request = {
@@ -90,9 +110,18 @@ function sendMessage(message, sender) {
   const standard = await sendMessage(request, sender);
   assert.equal(standard.ok, true);
   assert.equal(sessionRules.length, 0, "standard mode must not alter response headers");
+  assert.equal(registeredContentScripts.length, 1);
+  assert.deepEqual(
+    Array.from(registeredContentScripts[0].matches),
+    request.origins
+  );
+  assert.equal(registeredContentScripts[0].allFrames, true);
+  assert.equal(registeredContentScripts[0].persistAcrossSessions, false);
+  assert.equal(registeredContentScripts[0].runAt, "document_start");
 
   const compatible = await sendMessage({ ...request, compatibilityMode: true }, sender);
   assert.equal(compatible.ok, true);
+  assert.equal(registeredContentScripts.length, 1, "re-preparing a tab must replace its registration");
   assert.equal(sessionRules.length, 2);
   for (const rule of sessionRules) {
     assert.deepEqual(Array.from(rule.condition.tabIds), [tabId]);
@@ -117,12 +146,14 @@ function sendMessage(message, sender) {
   listeners.updated(tabId, { url: "https://outside.example/" });
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(sessionRules.length, 0, "navigating away must remove session header rules");
+  assert.equal(registeredContentScripts.length, 0, "navigating away must remove frame injection");
   assert.equal(sessionData[`activeComparison_${tabId}`], undefined);
 
   request.origins.forEach((origin) => grantedOrigins.add(origin));
   await sendMessage({ ...request, compatibilityMode: true }, sender);
   await sendMessage({ type: "END_COMPARISON" }, sender);
   assert.equal(sessionRules.length, 0, "session header rules must be removed at teardown");
+  assert.equal(registeredContentScripts.length, 0, "frame injection must be removed at teardown");
   assert.equal(sessionData[`activeComparison_${tabId}`], undefined);
   assert.deepEqual(removedPermissionSets.at(-1).sort(), request.origins.sort());
 
@@ -132,6 +163,7 @@ function sendMessage(message, sender) {
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(sessionData.activeComparison_74, undefined);
   assert.equal(sessionRules.length, 0, "closing the comparison tab must remove session rules");
+  assert.equal(registeredContentScripts.length, 0, "closing the tab must remove frame injection");
 
   console.log("permission-scoped comparison session regressions: PASS");
 })().catch((error) => {

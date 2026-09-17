@@ -58,7 +58,7 @@ Compared pages still communicate with their own services according to their own 
 | Permission | Purpose |
 | --- | --- |
 | `activeTab` | Reads the selected page and authorizes visible-tab capture after the user clicks Parity Scrollr. |
-| `scripting` | Installs comparison coordination only inside the approved comparison tab. |
+| `scripting` | Temporarily registers coordination for the approved origins; it activates only inside approved comparison frames. |
 | `storage` | Stores short-lived sessions and user-selected settings. |
 | `declarativeNetRequestWithHostAccess` | Enables explicit Compatibility mode for approved origins that refuse framing. |
 | Optional `<all_urls>` host access | Provides the browser capability ceiling for exact per-site grants and the separately enabled persistent all-site Classic workflow. |

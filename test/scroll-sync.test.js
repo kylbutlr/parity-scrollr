@@ -51,10 +51,16 @@ class FakeElement {
   }
 }
 
-function createFrameHarness({ elementScroller = false, shopifyPreviewBar = false, siteProfile = "none" } = {}) {
+function createFrameHarness({
+  elementScroller = false,
+  injectionCount = 1,
+  shopifyPreviewBar = false,
+  siteProfile = "none"
+} = {}) {
   const documentListeners = new Map();
   const windowListeners = new Map();
   const outboundMessages = [];
+  let activationRequests = 0;
 
   const parent = {
     postMessage(message) {
@@ -126,7 +132,10 @@ function createFrameHarness({ elementScroller = false, shopifyPreviewBar = false
     cancelAnimationFrame() {},
     chrome: {
       runtime: {
-        sendMessage: async () => ({ active: true, siteProfile })
+        sendMessage: async () => {
+          activationRequests += 1;
+          return { active: true, siteProfile };
+        }
       }
     },
     document,
@@ -153,16 +162,21 @@ function createFrameHarness({ elementScroller = false, shopifyPreviewBar = false
     window
   };
 
-  vm.runInNewContext(
-    fs.readFileSync(path.join(__dirname, "..", "scroll-sync.js"), "utf8"),
-    context,
-    { filename: "scroll-sync.js" }
+  const scrollSyncSource = fs.readFileSync(
+    path.join(__dirname, "..", "scroll-sync.js"),
+    "utf8"
   );
+  for (let index = 0; index < injectionCount; index += 1) {
+    vm.runInNewContext(scrollSyncSource, context, { filename: "scroll-sync.js" });
+  }
 
   return {
     async activate() {
       await Promise.resolve();
       await Promise.resolve();
+    },
+    activationRequestCount() {
+      return activationRequests;
     },
     apply(position) {
       windowListeners.get("message")({
@@ -271,6 +285,14 @@ function createFrameHarness({ elementScroller = false, shopifyPreviewBar = false
 }
 
 (async () => {
+  const duplicateInjection = createFrameHarness({ injectionCount: 2 });
+  await duplicateInjection.activate();
+  assert.equal(
+    duplicateInjection.activationRequestCount(),
+    1,
+    "overlapping comparison registrations must not activate frame coordination twice"
+  );
+
   const frame = createFrameHarness();
   await frame.activate();
 

@@ -5,6 +5,7 @@ const RULES_PER_TAB = 2;
 const ACTIVE_SESSION_PREFIX = "activeComparison_";
 const CAPTURE_ACCESS_PREFIX = "captureAccess_";
 const LAUNCH_PREFIX = "comparison_";
+const CONTENT_SCRIPT_PREFIX = "comparison-frame-";
 const COMPARE_URL = chrome.runtime.getURL("compare.html");
 const POPUP_URL = chrome.runtime.getURL("popup.html");
 const LAUNCH_MAX_AGE = 5 * 60 * 1000;
@@ -24,6 +25,34 @@ function ruleIdsForTab(tabId) {
 
 function isManagedRuleId(ruleId) {
   return Number.isInteger(ruleId) && ruleId >= RULE_OFFSET;
+}
+
+function contentScriptIdForTab(tabId) {
+  return `${CONTENT_SCRIPT_PREFIX}${tabId}`;
+}
+
+function isManagedContentScriptId(id) {
+  return typeof id === "string" && /^comparison-frame-\d+$/.test(id);
+}
+
+async function unregisterComparisonScript(tabId) {
+  await chrome.scripting.unregisterContentScripts({
+    ids: [contentScriptIdForTab(tabId)]
+  }).catch(() => {});
+}
+
+async function registerComparisonScript(tabId, origins) {
+  const id = contentScriptIdForTab(tabId);
+  await unregisterComparisonScript(tabId);
+  await chrome.scripting.registerContentScripts([{
+    id,
+    allFrames: true,
+    js: ["scroll-sync.js"],
+    matches: origins,
+    persistAcrossSessions: false,
+    runAt: "document_start"
+  }]);
+  return id;
 }
 
 function escapeRegex(value) {
@@ -80,27 +109,30 @@ async function prepareComparisonTab(tabId, request) {
     ? origins.map((origin, index) => ruleForOrigin(tabId, origin, ruleIds[index]))
     : [];
 
-  await chrome.declarativeNetRequest.updateSessionRules({
-    removeRuleIds: ruleIds,
-    addRules
-  });
-
-  const session = {
-    broadHostAccess: request.broadHostAccess === true,
-    compatibilityMode,
-    origins,
-    ruleIds: addRules.map((rule) => rule.id),
-    siteProfile: request.siteProfile === "shopify" ? "shopify" : "none"
-  };
-
   try {
+    const contentScriptId = await registerComparisonScript(tabId, origins);
+    await chrome.declarativeNetRequest.updateSessionRules({
+      removeRuleIds: ruleIds,
+      addRules
+    });
+
+    const session = {
+      broadHostAccess: request.broadHostAccess === true,
+      compatibilityMode,
+      contentScriptId,
+      origins,
+      ruleIds: addRules.map((rule) => rule.id),
+      siteProfile: request.siteProfile === "shopify" ? "shopify" : "none"
+    };
     await chrome.storage.session.set({ [sessionKey(tabId)]: session });
+    return session;
   } catch (error) {
-    await chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: ruleIds });
+    await Promise.allSettled([
+      unregisterComparisonScript(tabId),
+      chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: ruleIds })
+    ]);
     throw error;
   }
-
-  return session;
 }
 
 function activeOriginsFromStorage(stored) {
@@ -149,6 +181,7 @@ async function cleanupComparisonTab(tabId) {
 
   await Promise.allSettled([
     chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: ruleIds }),
+    unregisterComparisonScript(tabId),
     chrome.storage.session.remove([key, captureAccessKey(tabId)])
   ]);
   await releaseUnusedOrigins(session?.origins || []);
@@ -217,6 +250,19 @@ async function reconcileSessions() {
     .filter((ruleId) => isManagedRuleId(ruleId) && !activeRuleIds.has(ruleId));
   if (orphanRuleIds.length) {
     await chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: orphanRuleIds });
+  }
+  const activeContentScriptIds = new Set(
+    Object.entries(remainingSessions)
+      .filter(([key]) => key.startsWith(ACTIVE_SESSION_PREFIX))
+      .map(([, session]) => session?.contentScriptId)
+      .filter(Boolean)
+  );
+  const contentScripts = await chrome.scripting.getRegisteredContentScripts();
+  const orphanContentScriptIds = contentScripts
+    .map((script) => script.id)
+    .filter((id) => isManagedContentScriptId(id) && !activeContentScriptIds.has(id));
+  if (orphanContentScriptIds.length) {
+    await chrome.scripting.unregisterContentScripts({ ids: orphanContentScriptIds });
   }
   await releaseUnusedOrigins(staleLaunchOrigins);
 }

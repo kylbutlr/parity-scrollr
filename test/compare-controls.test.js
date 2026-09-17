@@ -232,6 +232,7 @@ class FakeImage {
   elements.get("#viewport-height").value = "900";
   elements.get("#url-parity-toggle").checked = false;
   elements.get("#quick-guide").hidden = true;
+  elements.get("#fatal-error").hidden = true;
   elements.get("#reference-shell").getBoundingClientRect = () => ({
     bottom: 500,
     height: 400,
@@ -295,7 +296,13 @@ class FakeImage {
         contains: async () => true
       },
       scripting: {
-        executeScript: async () => {}
+        executeScript: async ({ target }) => {
+          if (target.allFrames) {
+            throw new Error(
+              "Cannot access contents of the page. Extension manifest must request permission to access the respective host."
+            );
+          }
+        }
       },
       storage: {
         onChanged: { addListener() {} },
@@ -401,6 +408,12 @@ class FakeImage {
   );
 
   await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(
+    elements.get("#fatal-error").hidden,
+    true,
+    elements.get("#fatal-error-message").textContent
+  );
 
   const helpButton = elements.get("#help-button");
   const quickGuide = elements.get("#quick-guide");
