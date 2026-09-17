@@ -124,6 +124,9 @@ class FakeImage {
   const windowListeners = new Map();
   const storageWrites = [];
   const downloadLinks = [];
+  const prepareRequests = [];
+  const scheduledTimeouts = [];
+  let nextTimeoutId = 0;
   let captureCalls = 0;
   const frameMetrics = {
     clientHeight: 800,
@@ -209,6 +212,10 @@ class FakeImage {
     "#replica-status",
     "#reference-status-message",
     "#replica-status-message",
+    "#reference-compatibility-retry",
+    "#replica-compatibility-retry",
+    "#reference-compatibility-scope",
+    "#replica-compatibility-scope",
     "#comparison",
     "#apply-viewport",
     "#top-button",
@@ -285,12 +292,26 @@ class FakeImage {
   const context = {
     URLSearchParams,
     cancelAnimationFrame() {},
-    clearTimeout() {},
+    clearTimeout(timeoutId) {
+      const scheduled = scheduledTimeouts.find(({ id }) => id === timeoutId);
+      if (scheduled) {
+        scheduled.cancelled = true;
+      }
+    },
     chrome: {
       runtime: {
         getURL: (value) => `chrome-extension://test/${value}`,
         openOptionsPage: async () => {},
-        sendMessage: async () => ({ ok: true, session: { compatibilityMode: false } })
+        sendMessage: async (message) => {
+          if (message.type === "PREPARE_COMPARISON_TAB") {
+            prepareRequests.push(message);
+            return {
+              ok: true,
+              session: { compatibilityMode: message.compatibilityMode === true }
+            };
+          }
+          return { ok: true };
+        }
       },
       permissions: {
         contains: async () => true
@@ -357,8 +378,11 @@ class FakeImage {
     setTimeout(callback, duration) {
       if (duration < 1000) {
         queueMicrotask(callback);
+        return 0;
       }
-      return 1;
+      nextTimeoutId += 1;
+      scheduledTimeouts.push({ callback, cancelled: false, duration, id: nextTimeoutId });
+      return nextTimeoutId;
     },
     window,
     Date,
@@ -436,6 +460,42 @@ class FakeImage {
   assert.equal(elements.get("#replica-status").hidden, false);
   assert.equal(elements.get("#reference-status-message").textContent, "Loading reference…");
   assert.equal(elements.get("#replica-status-message").textContent, "Loading implementation…");
+
+  for (const timeout of scheduledTimeouts.filter(({ duration }) => duration === 15000)) {
+    if (!timeout.cancelled) {
+      timeout.callback();
+    }
+  }
+
+  assert.match(
+    elements.get("#reference-status-message").textContent,
+    /may block side-by-side display/i
+  );
+  assert.equal(elements.get("#reference-compatibility-retry").hidden, false);
+  assert.match(
+    elements.get("#reference-compatibility-scope").textContent,
+    /not browser-wide.*only to these two sites in this tab/i
+  );
+
+  const referenceUrlBeforeRetry = referenceFrame.src;
+  const replicaUrlBeforeRetry = replicaFrame.src;
+  await elements.get("#reference-compatibility-retry").listeners.get("click")();
+
+  assert.equal(prepareRequests.length, 2);
+  assert.deepEqual(prepareRequests[1].origins, [
+    "https://reference.example/*",
+    "https://replica.example/*"
+  ]);
+  assert.equal(prepareRequests[1].compatibilityMode, true);
+  assert.equal(prepareRequests[1].broadHostAccess, false);
+  assert.equal(referenceFrame.src, referenceUrlBeforeRetry);
+  assert.equal(replicaFrame.src, replicaUrlBeforeRetry);
+  assert.equal(
+    elements.get("#mode-indicator").textContent,
+    "Compatibility mode is on for these two sites in this tab"
+  );
+  assert.equal(elements.get("#reference-compatibility-retry").hidden, true);
+  assert.equal(elements.get("#replica-compatibility-retry").hidden, true);
 
   const maxHeightToggle = elements.get("#max-height-toggle");
   maxHeightToggle.checked = true;

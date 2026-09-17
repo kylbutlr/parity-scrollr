@@ -32,6 +32,10 @@ const referenceStatus = document.querySelector("#reference-status");
 const replicaStatus = document.querySelector("#replica-status");
 const referenceStatusMessage = document.querySelector("#reference-status-message");
 const replicaStatusMessage = document.querySelector("#replica-status-message");
+const referenceCompatibilityRetry = document.querySelector("#reference-compatibility-retry");
+const replicaCompatibilityRetry = document.querySelector("#replica-compatibility-retry");
+const referenceCompatibilityScope = document.querySelector("#reference-compatibility-scope");
+const replicaCompatibilityScope = document.querySelector("#replica-compatibility-scope");
 const fullCaptureControls = [
   ...document.querySelectorAll(".toolbar button, .toolbar input, .toolbar select")
 ];
@@ -47,11 +51,25 @@ const CAPTURE_THEME = Object.freeze({
 const frameStatuses = new Map([
   [
     referenceFrame,
-    { element: referenceStatus, message: referenceStatusMessage, label: "reference", timer: 0 }
+    {
+      element: referenceStatus,
+      label: "reference",
+      message: referenceStatusMessage,
+      retry: referenceCompatibilityRetry,
+      scope: referenceCompatibilityScope,
+      timer: 0
+    }
   ],
   [
     replicaFrame,
-    { element: replicaStatus, message: replicaStatusMessage, label: "implementation", timer: 0 }
+    {
+      element: replicaStatus,
+      label: "implementation",
+      message: replicaStatusMessage,
+      retry: replicaCompatibilityRetry,
+      scope: replicaCompatibilityScope,
+      timer: 0
+    }
   ]
 ]);
 
@@ -64,6 +82,7 @@ let reflowFrame = 0;
 let reflowTimer = 0;
 let captureRequestId = 0;
 let fullPageCaptureState = null;
+let compatibilityRetryInProgress = false;
 const pendingCaptureRequests = new Map();
 const frameBaseUrls = new Map();
 const currentFrameUrls = new Map();
@@ -146,6 +165,10 @@ function setFrameStatus(frame, state) {
   clearTimeout(status.timer);
   status.timer = 0;
   status.element.classList.toggle("is-warning", state === "warning");
+  status.retry.hidden = true;
+  status.retry.disabled = false;
+  status.retry.textContent = "Retry with Compatibility mode";
+  status.scope.hidden = true;
 
   if (state === "ready") {
     status.element.hidden = true;
@@ -154,7 +177,18 @@ function setFrameStatus(frame, state) {
 
   status.element.hidden = false;
   if (state === "warning") {
-    status.message.textContent = `${status.label[0].toUpperCase()}${status.label.slice(1)} is taking longer than expected. If it stays blank, restart with Compatibility mode.`;
+    const label = `${status.label[0].toUpperCase()}${status.label.slice(1)}`;
+    if (pair?.options?.compatibilityMode === true) {
+      status.message.textContent = `${label} still cannot load in Compatibility mode.`;
+      status.scope.textContent = "Open it in a tab to check sign-in, bot protection, or other site restrictions.";
+      status.scope.hidden = false;
+      return;
+    }
+
+    status.message.textContent = `${label} may block side-by-side display.`;
+    status.scope.textContent = "Not browser-wide. Compatibility mode applies only to these two sites in this tab and turns off when the comparison ends.";
+    status.scope.hidden = false;
+    status.retry.hidden = false;
     return;
   }
 
@@ -166,6 +200,70 @@ function setBothFramesLoading() {
   setFrameStatus(referenceFrame, "loading");
   setFrameStatus(replicaFrame, "loading");
 }
+
+function setCompatibilityRetryBusy(isBusy) {
+  for (const retry of [referenceCompatibilityRetry, replicaCompatibilityRetry]) {
+    retry.disabled = isBusy;
+    retry.textContent = isBusy ? "Enabling…" : "Retry with Compatibility mode";
+  }
+}
+
+function showCompatibilityRetryError(message) {
+  for (const status of frameStatuses.values()) {
+    status.element.hidden = false;
+    status.element.classList.add("is-warning");
+    status.message.textContent = "Compatibility mode could not be enabled.";
+    status.scope.textContent = `${message} Try again, or open the page in a regular tab.`;
+    status.scope.hidden = false;
+    status.retry.hidden = false;
+  }
+}
+
+function reloadCurrentFrames() {
+  setBothFramesLoading();
+  referenceFrame.src = currentFrameUrls.get(referenceFrame) || pair.referenceUrl;
+  replicaFrame.src = currentFrameUrls.get(replicaFrame) || pair.replicaUrl;
+}
+
+async function retryWithCompatibilityMode() {
+  if (compatibilityRetryInProgress || !pair || !comparisonTabId) {
+    return;
+  }
+
+  compatibilityRetryInProgress = true;
+  setCompatibilityRetryBusy(true);
+
+  try {
+    const result = await chrome.runtime.sendMessage({
+      type: "PREPARE_COMPARISON_TAB",
+      origins: pair.origins,
+      broadHostAccess: pair.options?.broadHostAccess === true,
+      compatibilityMode: true,
+      siteProfile: pair.options?.siteProfile
+    });
+    if (!result?.ok || result.session?.compatibilityMode !== true) {
+      throw new Error(result?.error || "The temporary comparison setting was not applied.");
+    }
+
+    pair = {
+      ...pair,
+      options: {
+        ...pair.options,
+        compatibilityMode: true
+      }
+    };
+    modeIndicator.textContent = "Compatibility mode is on for these two sites in this tab";
+    reloadCurrentFrames();
+  } catch (error) {
+    showCompatibilityRetryError(error.message);
+  } finally {
+    compatibilityRetryInProgress = false;
+    setCompatibilityRetryBusy(false);
+  }
+}
+
+referenceCompatibilityRetry.addEventListener("click", retryWithCompatibilityMode);
+replicaCompatibilityRetry.addEventListener("click", retryWithCompatibilityMode);
 
 function setReplicaPreview(showReplica) {
   const active = blinkToggle.checked && showReplica;
@@ -520,9 +618,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 document.querySelector("#reload-button").addEventListener("click", () => {
-  setBothFramesLoading();
-  referenceFrame.src = currentFrameUrls.get(referenceFrame) || pair.referenceUrl;
-  replicaFrame.src = currentFrameUrls.get(replicaFrame) || pair.replicaUrl;
+  reloadCurrentFrames();
 });
 
 blinkToggle.addEventListener("change", () => {

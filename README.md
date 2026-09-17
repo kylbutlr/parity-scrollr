@@ -31,7 +31,7 @@ Parity Scrollr 2.0.0 is available as public source and can be loaded locally in 
 
 1. Open the reference page and click the toolbar icon.
 2. Enter the implementation page.
-3. Leave Compatibility mode off unless a selected site blocks framing. Select the Shopify profile only for Shopify theme-preview capture handling. Shopify Admin URLs are not comparison pages and are rejected before permission is requested.
+3. Leave Compatibility mode off unless a selected site blocks framing. If a page stays blank, use the in-comparison retry to enable it without restarting. Select the Shopify profile only for Shopify theme-preview capture handling. Shopify Admin URLs are not comparison pages and are rejected before permission is requested.
 4. Review the exact selected sites and why access is needed, then continue to Chrome's permission prompt and open the comparison.
 5. Use Sync scroll, URL parity, Blink mode, responsive presets, custom dimensions, Max height, and the page history controls.
 
@@ -46,7 +46,7 @@ Use End to close the comparison and remove its session rules and unused site gra
 ### Standard, Compatibility, and Classic modes
 
 - Standard mode leaves page response headers unchanged.
-- Compatibility mode removes enforced Content Security Policy and X-Frame-Options only from the two approved origins, only for subframes in the active comparison tab. It is off by default and cannot bypass sign-in, anti-bot checks, JavaScript frame busting, or other controls.
+- Compatibility mode is a Parity Scrollr comparison setting, not a browser-wide setting. It removes enforced Content Security Policy and X-Frame-Options only from the two approved origins, only for subframes in the active comparison tab. It is off by default, turns off when the comparison ends, and cannot bypass sign-in, anti-bot checks, JavaScript frame busting, or other controls.
 - Classic workflow is an explicit Settings preset for existing users. It requests persistent HTTP and HTTPS site access, enables Compatibility mode by default, includes query and fragment URL parity, remembers the implementation URL, and defaults Shopify capture handling on. Runtime behavior remains limited to active comparison tabs.
 
 ## Privacy and permissions

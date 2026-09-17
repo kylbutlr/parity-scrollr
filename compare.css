@@ -476,19 +476,48 @@ select:focus {
 
 .frame-status.is-warning {
   inset: 8px auto auto 50%;
-  max-width: calc(100% - 16px);
-  padding: 7px 10px;
+  align-items: flex-start;
+  width: min(440px, calc(100% - 16px));
+  padding: 10px 11px 11px;
   border: 1px solid var(--ui-warning);
   color: var(--ui-warning);
   background: rgba(29, 34, 34, 0.96);
   transform: translateX(-50%);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  pointer-events: auto;
 }
 
 .frame-status.is-warning .status-spinner {
   display: none;
+}
+
+.frame-status-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.compatibility-scope {
+  color: var(--ui-text-muted);
+}
+
+.compatibility-retry {
+  flex: none;
+  height: 28px;
+  border-color: var(--ui-warning);
+  color: var(--ui-warning);
+  background: transparent;
+  white-space: nowrap;
+}
+
+.compatibility-retry:hover,
+.compatibility-retry:focus-visible {
+  border-color: var(--ui-warning);
+  color: var(--ui-canvas);
+  background: var(--ui-warning);
 }
 
 @keyframes status-spin {

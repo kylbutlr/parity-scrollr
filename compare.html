@@ -134,7 +134,11 @@
             <iframe id="reference-frame" title="Reference site" sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             <div id="reference-status" class="frame-status" role="status" aria-live="polite">
               <span class="status-spinner" aria-hidden="true"></span>
-              <span id="reference-status-message">Loading reference…</span>
+              <div class="frame-status-copy">
+                <span id="reference-status-message">Loading reference…</span>
+                <span id="reference-compatibility-scope" class="compatibility-scope" hidden></span>
+              </div>
+              <button id="reference-compatibility-retry" class="compatibility-retry" type="button" hidden>Retry with Compatibility mode</button>
             </div>
           </div>
         </div>
@@ -153,7 +157,11 @@
             <iframe id="replica-frame" title="Implementation site" sandbox="allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             <div id="replica-status" class="frame-status" role="status" aria-live="polite">
               <span class="status-spinner" aria-hidden="true"></span>
-              <span id="replica-status-message">Loading implementation…</span>
+              <div class="frame-status-copy">
+                <span id="replica-status-message">Loading implementation…</span>
+                <span id="replica-compatibility-scope" class="compatibility-scope" hidden></span>
+              </div>
+              <button id="replica-compatibility-retry" class="compatibility-retry" type="button" hidden>Retry with Compatibility mode</button>
             </div>
           </div>
         </div>

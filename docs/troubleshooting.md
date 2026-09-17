@@ -3,7 +3,7 @@
 ## Embedding
 
 - Shopify Admin URLs are not supported and are blocked before site access is requested. Open the storefront or theme preview in a regular tab and start the comparison there.
-- Standard mode respects framing headers. Restart with Compatibility mode only when you understand its narrower but weaker protection model.
+- Standard mode respects framing headers. If a page stays blank, select **Retry with Compatibility mode** in its warning. This temporary Parity Scrollr setting applies only to the two selected sites in the current comparison tab and turns off when the comparison ends.
 - Compatibility mode cannot bypass authentication, anti-bot challenges, JavaScript frame busting, browser-owned pages, extension pages, or other security controls.
 - Redirects to a different origin are not automatically granted. End the comparison and start a new one with the final URL.
 - Framed pages may receive different cookie treatment, including third-party-cookie restrictions. Sign in directly when appropriate, but do not use Parity Scrollr to circumvent access controls.
