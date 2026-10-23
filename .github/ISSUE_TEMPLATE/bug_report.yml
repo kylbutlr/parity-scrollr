@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible problem with Parity Scrollr.
+body:
+  - type: markdown
+    attributes:
+      value: Do not share credentials, private tokens, confidential captures, or unsanitized URLs.
+  - type: input
+    id: versions
+    attributes:
+      label: Browser and extension versions
+      description: Include browser name, browser version, operating system, and Parity Scrollr version.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include Website or Design image mode, Compatibility mode, and sanitized URLs if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Include the visible error and sanitized screenshots if useful.
+    validations:
+      required: true

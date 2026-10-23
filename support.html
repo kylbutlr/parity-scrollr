@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parity Scrollr support</title>
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
+      <h1>Support and troubleshooting</h1>
+      <p class="lede">Some pages cannot be shown inside a comparison. Parity Scrollr does not bypass sign-in, bot protection, or site security controls.</p>
+
+      <h2>Install or update the extension</h2>
+      <p>Download a browser ZIP from the <a href="https://github.com/kylbutlr/parity-scrollr/releases" target="_blank" rel="noopener noreferrer">GitHub releases page</a>, extract it to a permanent folder, and use Load unpacked in your browser's Extensions page with Developer mode enabled. Keep that folder in place. Updates are manual; end comparisons, replace the files in that folder, then select Reload on the extension.</p>
+
+      <h2>A page stays blank or shows a framing warning</h2>
+      <p>Parity Scrollr automatically retries once with Compatibility mode if a page does not report ready within 15 seconds. The session status shows when this happens. This retry temporarily removes the selected pages' security-policy and framing headers in this comparison tab. It can change which scripts and resources those pages load, and turns off when the comparison ends. If the page still fails, open it directly and confirm that you can access it normally. Pages with their own frame-blocking code, bot challenges, sign-in boundaries, browser-owned pages, and some site policies remain unsupported.</p>
+
+      <h2>A signed-in page appears signed out</h2>
+      <p>Framed pages can receive different cookie treatment, especially for third-party cookies. Open both sites directly, sign in if appropriate, and try again. Parity Scrollr does not capture, copy, or bypass credentials.</p>
+
+      <h2>The responsive rendering differs from a device</h2>
+      <p>Viewport controls change CSS width and height only. They do not emulate user agent, device pixel ratio, touch input, orientation APIs, safe-area insets, or hardware. Use real-device or browser device emulation for those checks.</p>
+
+      <h2>Capture is disabled</h2>
+      <p>Click the Parity Scrollr toolbar icon while the comparison tab is active. This grants temporary capture access for that tab. You can instead enable persistent all-site access in Settings.</p>
+
+      <h2>Full-page capture fails or looks inconsistent</h2>
+      <p>Keep the comparison tab active until capture finishes. Full-page capture requires document scrolling; pages with an independently scrolling main area should use Capture view instead. Sticky and fixed elements can repeat because the extension captures multiple scroll positions. Lazy content, animation, video, infinite scroll, or a growing page can prevent a stable result. The capture stops after 60 screenshots and scales extremely tall output to browser-safe image dimensions.</p>
+
+      <h2>Shopify theme previews</h2>
+      <p>Recognized Shopify preview bars are detected automatically and stay hidden through every full-page screenshot, then return after the original scroll positions are restored. This cleanup also runs if capture is cancelled or fails. The storefront body itself is never hidden.</p>
+
+      <h2>Shopify Admin is not a comparison page</h2>
+      <p>Parity Scrollr blocks Shopify Admin URLs before requesting site access. Open the storefront or theme preview in a regular browser tab, then start the comparison there. The extension does not need access to admin.shopify.com.</p>
+
+      <h2>Get help</h2>
+      <p><a href="https://github.com/kylbutlr/parity-scrollr/issues" target="_blank" rel="noopener noreferrer">Report an issue on GitHub</a>. Include your browser and extension versions, what you tried, the visible error, whether Compatibility mode was on, and sanitized URLs with private tokens removed. Do not attach confidential captures.</p>
+
+      <nav class="footer-links"><a href="welcome.html">How it works</a><a href="settings.html">Settings</a><a href="privacy.html">Privacy</a></nav>
+    </main>
+  </body>
+</html>
