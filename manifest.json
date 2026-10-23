@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Parity Scrollr",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Compare design images or reference pages with live sites using synchronized scrolling, responsive viewports, and captures.",
   "minimum_chrome_version": "112",
   "permissions": [
