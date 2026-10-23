@@ -492,6 +492,11 @@ select:focus {
   line-height: 1.4;
 }
 
+.frame-status:not(.is-warning) .frame-status-copy {
+  flex: 0 1 auto;
+  text-align: center;
+}
+
 .compatibility-scope {
   color: var(--ui-text-muted);
 }

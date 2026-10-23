@@ -8,9 +8,9 @@ A focused workspace for frontend developers and designers reviewing layout, spac
 
 ## Status
 
-Version 2.2.0 is the current source candidate. GitHub download publication is pending installed-browser verification. Parity Scrollr uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope.
+Current version: **2.2.1**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
 
-[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [Release notes](docs/release-notes-v2.2.0.md)
+[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [Release notes](docs/release-notes-v2.2.1.md)
 
 ## Highlights
 
@@ -24,7 +24,7 @@ Version 2.2.0 is the current source candidate. GitHub download publication is pe
 
 ### Install locally
 
-1. Download the browser ZIP from [GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases), once available, or clone this source.
+1. Download the browser ZIP from [GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases), or clone this source.
 2. Extract the ZIP to a permanent folder. Open Manage extensions from your browser's Extensions menu.
 3. Enable Developer mode, choose **Load unpacked**, and select the folder containing `manifest.json`.
 4. Pin Parity Scrollr to the toolbar, open a website, and click the icon.
