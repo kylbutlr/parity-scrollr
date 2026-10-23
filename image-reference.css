@@ -1,0 +1,21 @@
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: #fff;
+}
+
+#reference-image {
+  display: block;
+  max-width: none;
+}
+
+#image-error {
+  padding: 20px;
+  color: #8b2020;
+  font: 14px/1.5 system-ui, sans-serif;
+}
+
+[hidden] {
+  display: none !important;
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to Parity Scrollr</title>
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="page.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="page-brand"><img src="icons/icon.svg" alt="" /> Parity Scrollr</div>
+      <h1>See the difference, side by side</h1>
+      <p class="lede">Compare a website or design image with your implementation. Match viewport sizes, scroll together, and save a visual record of your review.</p>
+
+      <section class="content-section">
+        <h2>Start your first comparison</h2>
+        <ol>
+          <li>Open a website and click the Parity Scrollr toolbar icon.</li>
+          <li>Choose Website to compare two pages, or Design image to import a PNG or JPEG export. For images, enter the design frame width in CSS pixels.</li>
+          <li>Enter the implementation URL. If a page does not load, Parity Scrollr automatically tries Compatibility mode once.</li>
+          <li>Review the exact sites and why access is needed, then continue to Chrome's permission prompt. By default, that access is removed when the comparison ends.</li>
+          <li>Scroll either page, choose a viewport size, or download a comparison capture.</li>
+        </ol>
+      </section>
+
+      <section class="content-section">
+        <h2>Automatic page recovery</h2>
+        <p>Some sites block side-by-side viewing. If a page does not report ready within 15 seconds, Parity Scrollr retries once with Compatibility mode. This temporarily disables some page protections for the selected sites in that tab. This can change which scripts and resources the pages load. Sign-in and bot checks may still prevent loading. <a href="support.html">Learn about unsupported pages</a>.</p>
+      </section>
+
+      <section class="content-section">
+        <h2>Your comparison stays local</h2>
+        <p>Parity Scrollr keeps active URLs in this browser session and downloads captures directly to your device. It does not upload captures or send comparison data to the extension developer. The pages you compare still contact their own services normally. <a href="privacy.html">Read the privacy details</a>.</p>
+      </section>
+
+      <section class="content-section">
+        <h2>Capture needs one confirmation</h2>
+        <p>If a capture button is disabled, click the Parity Scrollr toolbar icon while the comparison tab is active. Capture access lasts only for that comparison tab unless you enable persistent all-site access.</p>
+      </section>
+
+      <p class="start-hint">Ready to begin? Open a website, then click the Parity Scrollr toolbar icon. Pin it in your browser's Extensions menu for easy access.</p>
+      <div class="actions">
+        <button id="open-settings" class="primary" type="button">Open settings</button>
+      </div>
+      <nav class="footer-links" aria-label="Product information">
+        <a href="privacy.html">Privacy</a>
+        <a href="support.html">Support and troubleshooting</a>
+      </nav>
+    </main>
+    <script src="welcome.js"></script>
+  </body>
+</html>
