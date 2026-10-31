@@ -6,6 +6,12 @@ A focused workspace for frontend developers and designers reviewing layout, spac
 
 [Report an issue](https://github.com/kylbutlr/parity-scrollr/issues)
 
+## Preview
+
+<img src="docs/images/app-preview.gif" width="640" alt="Parity Scrollr comparing two fictional Fieldnotes storefronts with synchronized scrolling">
+
+App preview with demo data. [App overview](https://kylbutlr.com/apps/parity-scrollr). [Still image](docs/images/app-preview.webp).
+
 ## Status
 
 Current version: **2.2.1**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
