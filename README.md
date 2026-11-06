@@ -10,7 +10,7 @@ A focused workspace for frontend developers and designers reviewing layout, spac
 
 <img src="docs/images/app-preview.gif" width="640" alt="Parity Scrollr comparing two fictional Fieldnotes storefronts with synchronized scrolling">
 
-App preview with demo data. [App overview](https://kylbutlr.com/apps/parity-scrollr). [Still image](docs/images/app-preview.webp).
+App preview of the unpublished 2.3.0 refresh candidate with demo data. [App overview](https://kylbutlr.com/apps/parity-scrollr). [Still image](docs/images/app-preview.webp). [Capture provenance](docs/images/app-preview.provenance.json).
 
 ## Status
 

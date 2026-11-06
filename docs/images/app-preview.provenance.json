@@ -1,30 +1,49 @@
 {
-  "capturedAt": "2026-11-06T03:00:25.095306Z",
+  "capturedAt": "2026-11-06T06:40:35.843Z",
   "sourceVersion": "2.3.0",
-  "appStylrVersion": "1.3.0",
+  "sourceRevision": "ad065544c7dd9abc32ef1e723e691f2edf891553",
+  "releaseStatus": "Unpublished visual-refresh candidate",
+  "appStylrVersion": "1.4.1",
   "fictionalData": true,
-  "scenario": "Actual comparison UI and sync code using local fictional Fieldnotes pages; in-memory browser API adapter, no installed extension or permission grant.",
   "capture": {
     "width": 1100,
-    "height": 760
+    "height": 760,
+    "method": "One isolated headless Chrome tab, viewport-only PNG frames of actual owning-repository frontend files."
   },
   "animation": {
     "width": 960,
     "height": 663,
     "frames": 25,
-    "durationMs": 6360
+    "durationMs": 5060
   },
-  "edits": "Actual browser PNG frames. Still WebP encoded; animation downscaled and encoded with initial, middle and final holds. No text replacement, retouching or invented controls.",
+  "source": "Actual comparison UI and scroll-sync scripts between two local fictional Fieldnotes pages. All 13 positions matched across both panes.",
+  "edits": "Viewport screenshots resized and GIF/WebP encoded, with presentation pauses. No text replacement, retouching or invented product controls. Recording controls stay outside the exported viewport.",
+  "coverageLimits": "No installed-extension, native toolbar anchoring, native permissions, service-worker restart, real tab manipulation or stable-browser release acceptance is established by these captures.",
+  "rawFrameSHA256": [
+    "b827d4aa9f2df9e25d4b76a3cfa5539cf9e5d91ca0d2a78a6886ae85634c8689",
+    "91b1bda14c82812a5f63ea6253bf852a6f800f88e562dfd1146ba0285609199e",
+    "8fffa4aef5d04609b20e36c4debc54033c1571577a4b78523b90df84de6d9b30",
+    "a7dc7783961d3f7cf7f7757fd796f05fcc095b0173c1a8eee8d3a836ce87bed2",
+    "7375c569c7a6447488829b6f0c40a097689ecfcb44972029888380e2c33d8b22",
+    "762bfd988127cf757dad006bed7de2b88035c33fd292accd65cef1b5ce1b97d4",
+    "a3317ce12089d611495d5e393d33fc69dc9febe79ce48248e64a9891b25551a6",
+    "ce1a003ddc9f158d4be3c045f15b12d5dd078188382fa0fe37669624fed6cc5c",
+    "ed762c9bd04cb9f049ef54dd10b3678a9b9742f3fc3ace76399f6b5c11430160",
+    "6c7f7cc4853184c38c3fe5b5d0a6d9cf6c16bac6af61740523ab77ae0619c14d",
+    "81b754aeb99b6ecbb78a1fc0ac082ade78793eba79c2a630f24b17b8d26152fc",
+    "43336c44210a455e8e750a71c9d71279b4decc3f168231cb294d1ea820ff1bfb",
+    "4875901c5dd6343b31d7261a40323793ab32a373273649f48ce0a76eaa9efe67"
+  ],
   "files": [
     {
-      "file": "docs/images/app-preview.webp",
-      "bytes": 55242,
-      "sha256": "9e5be467b3ec50431cd74ad445f79d238b01761d00547c699993efd8eda26ec2"
+      "file": "app-preview.webp",
+      "bytes": 55290,
+      "sha256": "6d0347960768a5ea35d100786850907edf43e4720a5e934138ab78b2c8f63acf"
     },
     {
-      "file": "docs/images/app-preview.gif",
-      "bytes": 1307514,
-      "sha256": "ae713700d1ecc0f2868ec9b959c72d8f64cf72dada716d7c6a27ec89de92c82a"
+      "file": "app-preview.gif",
+      "bytes": 1332829,
+      "sha256": "3d4f649e507e372bdad3ab2ff7d436696be158ac6f51c13b871beaa2728c0ea7"
     }
   ]
 }
