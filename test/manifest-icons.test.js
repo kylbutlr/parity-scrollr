@@ -35,7 +35,7 @@ assert.deepEqual(manifest.permissions.sort(), [
 assert.deepEqual(manifest.optional_host_permissions, ["<all_urls>"]);
 assert.equal(manifest.content_scripts, undefined);
 
-for (const size of [16, 32, 48, 128]) {
+for (const size of [16, 32, 128, 512]) {
   const relativePath = manifest.icons[String(size)];
   assert.equal(relativePath, `icons/icon-${size}.png`);
 
@@ -51,6 +51,9 @@ for (const size of [16, 32, 48, 128]) {
 
 assert.equal(manifest.action.default_icon["16"], "icons/icon-16.png");
 assert.equal(manifest.action.default_icon["32"], "icons/icon-32.png");
+assert.equal(manifest.icons["48"], undefined, "Management cards must select the higher-resolution 128px artwork");
+assert.equal(manifest.action.default_icon["48"], "icons/icon-48.png");
+assert.equal(manifest.action.default_icon["128"], "icons/icon-128.png");
 
 const iconSvg = fs.readFileSync(path.join(root, "icons", "icon.svg"), "utf8");
 assert.ok(iconSvg.includes('viewBox="0 0 1024 1024"'));

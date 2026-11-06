@@ -26,6 +26,9 @@ const iconOutput = join(root, "dist/app-stylr-icons");
 execFileSync(process.execPath, [join(upstream, "scripts/generate-icons.mjs"), "--source", join(root, "icons/icon.svg"), "--output", iconOutput], { stdio: "pipe", cwd: root });
 for (const size of [16, 32, 48, 128]) files.set(`icons/icon-${size}.png`, await readFile(join(iconOutput, `chrome/icon-${size}.png`)));
 
+// The pinned generator renders this 512px PNG directly from the SVG master.
+files.set("icons/icon-512.png", await readFile(join(iconOutput, "web/icon-512.png")));
+
 for (const [name, content] of files) {
   const target = join(root, name);
   if (check) {
