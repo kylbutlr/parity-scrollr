@@ -10,13 +10,13 @@ A focused workspace for frontend developers and designers reviewing layout, spac
 
 <img src="docs/images/app-preview.gif" width="640" alt="Parity Scrollr comparing two fictional Fieldnotes storefronts with synchronized scrolling">
 
-App preview of the unpublished 2.3.0 refresh candidate with demo data. [App overview](https://kylbutlr.com/apps/parity-scrollr). [Still image](docs/images/app-preview.webp). [Capture provenance](docs/images/app-preview.provenance.json).
+App preview of Parity Scrollr 2.3.0 with demo data. [App overview](https://kylbutlr.com/apps/parity-scrollr). [Still image](docs/images/app-preview.webp). [Capture provenance](docs/images/app-preview.provenance.json).
 
 ## Status
 
-Source candidate: **2.3.0**. Latest published download: **2.2.1**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
+Version **2.3.0**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
 
-[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [Published release notes](docs/release-notes-v2.2.1.md) · [2.3.0 candidate notes](docs/release-notes-v2.3.0.md)
+[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [2.3.0 release notes](docs/release-notes-v2.3.0.md)
 
 ## Highlights
 
