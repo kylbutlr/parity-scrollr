@@ -39,8 +39,9 @@ main {
 h1 {
   margin: var(--space-16) 0 var(--space-8);
   color: var(--ui-text);
-  font-size: 26px;
-  line-height: 32px;
+  font-size: var(--type-heading1-size);
+  line-height: var(--type-heading1-line-height);
+  font-weight: var(--type-heading1-weight);
   letter-spacing: -0.02em;
 }
 
@@ -130,12 +131,12 @@ select {
   height: 44px;
   padding: 0 12px;
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   outline: none;
   color: var(--ui-text);
   background: var(--ui-surface-raised);
   font-size: 13px;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color var(--motion-control) ease, box-shadow var(--motion-control) ease;
 }
 
 input[type="url"]:focus,
@@ -143,7 +144,7 @@ input[type="number"]:focus,
 input[type="file"]:focus,
 select:focus {
   border-color: var(--ui-accent);
-  box-shadow: 0 0 0 3px rgba(169, 206, 194, 0.14);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-focus) 14%, transparent);
 }
 
 input[type="file"] {
@@ -156,7 +157,7 @@ input[type="file"]::file-selector-button {
   margin-right: 9px;
   padding: 5px 8px;
   border: 1px solid var(--ui-border-strong);
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   color: var(--ui-text);
   background: var(--ui-surface);
   font: inherit;
@@ -176,12 +177,12 @@ button {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease;
+  transition: background var(--motion-control) ease, border-color var(--motion-control) ease;
 }
 
 .primary {
   margin-top: 10px;
-  color: var(--brand-ink);
+  color: var(--ui-accent-text);
   background: var(--ui-accent);
 }
 
@@ -208,10 +209,10 @@ button {
 .error {
   margin: 3px 0 0;
   padding: 9px 10px;
-  border: 1px solid var(--ui-danger);
-  border-radius: 8px;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-control);
   color: var(--ui-danger);
-  background: var(--ui-danger-surface);
+  background: var(--ui-surface);
   font-size: 13px;
   line-height: 16px;
 }
@@ -293,7 +294,7 @@ button:disabled {
   margin: var(--space-12) 0;
   padding: var(--space-12);
   border: 1px solid var(--ui-border-strong);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--ui-surface);
 }
 
@@ -327,7 +328,7 @@ button:disabled {
 
 .trust-note,
 .retention-note,
-.access-review > p {
+.access-review > p:not(.error) {
   color: var(--ui-text-muted);
   font-size: 12px;
   line-height: 18px;

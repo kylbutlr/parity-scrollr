@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-11-06T03:00:25.095306Z",
+  "sourceVersion": "2.3.0",
+  "appStylrVersion": "1.3.0",
+  "fictionalData": true,
+  "scenario": "Actual comparison UI and sync code using local fictional Fieldnotes pages; in-memory browser API adapter, no installed extension or permission grant.",
+  "capture": {
+    "width": 1100,
+    "height": 760
+  },
+  "animation": {
+    "width": 960,
+    "height": 663,
+    "frames": 25,
+    "durationMs": 6360
+  },
+  "edits": "Actual browser PNG frames. Still WebP encoded; animation downscaled and encoded with initial, middle and final holds. No text replacement, retouching or invented controls.",
+  "files": [
+    {
+      "file": "docs/images/app-preview.webp",
+      "bytes": 55242,
+      "sha256": "9e5be467b3ec50431cd74ad445f79d238b01761d00547c699993efd8eda26ec2"
+    },
+    {
+      "file": "docs/images/app-preview.gif",
+      "bytes": 1307514,
+      "sha256": "ae713700d1ecc0f2868ec9b959c72d8f64cf72dada716d7c6a27ec89de92c82a"
+    }
+  ]
+}

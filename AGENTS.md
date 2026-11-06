@@ -1,6 +1,6 @@
 ## App Stylr
 
-This app follows [App Stylr v1.2.0 source](https://github.com/kylbutlr/app-stylr/tree/b3ca31ea264d5dd233fd871ac167247f1c306985).
+This app follows [App Stylr v1.3.0 source](https://github.com/kylbutlr/app-stylr/tree/v1.3.0).
 
 ### Required visual review
 

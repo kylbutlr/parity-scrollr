@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
+      - name: Install build dependencies
+        run: npm ci
       - name: Test
         run: npm test
       - name: Package browser downloads

@@ -62,7 +62,7 @@ a {
   margin-top: 20px;
   padding: 20px;
   border: 1px solid var(--ui-border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: var(--ui-surface);
 }
 
@@ -182,8 +182,8 @@ button.primary {
 }
 
 .warning {
-  border-color: var(--ui-warning);
-  background: var(--ui-warning-surface);
+  border-color: var(--ui-border);
+  background: var(--ui-surface);
 }
 
 .footer-links {

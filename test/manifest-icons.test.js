@@ -54,10 +54,10 @@ assert.equal(manifest.action.default_icon["32"], "icons/icon-32.png");
 
 const iconSvg = fs.readFileSync(path.join(root, "icons", "icon.svg"), "utf8");
 assert.ok(iconSvg.includes('viewBox="0 0 1024 1024"'));
-assert.ok(iconSvg.includes('x="92" y="92" width="840" height="840" rx="190"'));
-assert.ok(iconSvg.includes('stop-color="#0D0D0D"'));
-assert.ok(iconSvg.includes('stop-color="#3B4145"'));
-assert.ok(iconSvg.includes('stop-color="#899F98"'));
+assert.ok(iconSvg.includes('width="1024" height="1024" rx="160"'));
+assert.ok(iconSvg.includes('fill="#262626"'));
+assert.ok(iconSvg.includes('stroke="#F5F5F5"'));
+assert.ok(!/gradient/i.test(iconSvg), "flat icon must not reintroduce a gradient");
 assert.ok(!iconSvg.includes("<text"), "the brand icon must use a glyph instead of a lettermark");
 
 console.log("manifest and brand icon regressions: PASS");

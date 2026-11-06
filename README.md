@@ -14,9 +14,9 @@ App preview with demo data. [App overview](https://kylbutlr.com/apps/parity-scro
 
 ## Status
 
-Current version: **2.2.1**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
+Source candidate: **2.3.0**. Latest published download: **2.2.1**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
 
-[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [Release notes](docs/release-notes-v2.2.1.md)
+[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [Published release notes](docs/release-notes-v2.2.1.md) · [2.3.0 candidate notes](docs/release-notes-v2.3.0.md)
 
 ## Highlights
 
@@ -97,9 +97,10 @@ See the [permission rationale](docs/permissions.md) and [privacy policy](docs/pr
 
 ## Development
 
-Run automated tests:
+Use Node 22.13 or newer for development. Install the pinned build dependency, then run automated tests:
 
 ```sh
+npm ci
 npm test
 ```
 
@@ -108,6 +109,8 @@ Create reproducible Chrome and Edge packages:
 ```sh
 npm run package
 ```
+
+Run `npm run styles` after deliberately updating the shared pin or master icon. `npm test` verifies the generated adapter, fonts, and four extension icons against that immutable source. Downloaded extensions need no Node runtime or build step.
 
 Generated ZIPs, checksums, and the contents report are written to ignored `dist/`. Follow the [release checklist](docs/releasing.md). Packaging does not publish anything.
 
@@ -124,7 +127,7 @@ Generated ZIPs, checksums, and the contents report are written to ignored `dist/
 
 ## App Stylr
 
-Parity Scrollr is pinned to [App Stylr v1.2.0 source](https://github.com/kylbutlr/app-stylr/tree/b3ca31ea264d5dd233fd871ac167247f1c306985). The compact comparison toolbar exception is documented in [docs/app-stylr-exceptions.md](docs/app-stylr-exceptions.md). Bundled Geist fonts retain their [SIL Open Font License](fonts/GEIST-LICENSE.txt).
+Parity Scrollr is pinned to [App Stylr v1.3.0 source](https://github.com/kylbutlr/app-stylr/tree/v1.3.0). The compact comparison toolbar exception is documented in [docs/app-stylr-exceptions.md](docs/app-stylr-exceptions.md). Bundled Geist fonts retain their [SIL Open Font License](fonts/GEIST-LICENSE.txt).
 
 Review the [App Stylr Visual Reference](https://app-stylr.netlify.app/) before interface changes. The pinned release remains the implementation source of truth.
 
@@ -136,4 +139,4 @@ Start with the [support guide](docs/support.md) and [troubleshooting guide](docs
 
 Parity Scrollr is available under the [MIT License](LICENSE).
 
-Current styling source: [App Stylr Evening adoption](docs/app-stylr-evening-adoption.md).
+Current styling source: [App Stylr v1.3.0 adoption](docs/app-stylr-v1.3.0.md).

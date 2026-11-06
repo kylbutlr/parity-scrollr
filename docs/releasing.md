@@ -4,7 +4,7 @@ Parity Scrollr ships as browser ZIP downloads through GitHub. A browser-store su
 
 ## Build locally
 
-1. Confirm `manifest.json` and `package.json` have the same version.
+1. Use Node 22.13 or newer, run `npm ci`, and confirm `manifest.json` and `package.json` have the same version.
 2. Run `npm test`.
 3. Run `npm run package`.
 4. Inspect `dist/CONTENTS.txt` and `dist/SHA256SUMS`.
