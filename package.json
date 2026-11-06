@@ -9,7 +9,7 @@
     "styles:check": "node scripts/sync-app-stylr.mjs --check"
   },
   "devDependencies": {
-    "app-stylr": "https://github.com/kylbutlr/app-stylr/archive/refs/tags/v1.3.0.tar.gz"
+    "app-stylr": "https://github.com/kylbutlr/app-stylr/archive/refs/tags/v1.4.1.tar.gz"
   },
   "engines": {
     "node": ">=22.13.0"

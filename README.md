@@ -127,9 +127,9 @@ Generated ZIPs, checksums, and the contents report are written to ignored `dist/
 
 ## App Stylr
 
-Parity Scrollr is pinned to [App Stylr v1.3.0 source](https://github.com/kylbutlr/app-stylr/tree/v1.3.0). The compact comparison toolbar exception is documented in [docs/app-stylr-exceptions.md](docs/app-stylr-exceptions.md). Bundled Geist fonts retain their [SIL Open Font License](fonts/GEIST-LICENSE.txt).
+Parity Scrollr is pinned to [App Stylr v1.4.1 source](https://github.com/kylbutlr/app-stylr/tree/v1.4.1). The compact comparison toolbar exception is documented in [docs/app-stylr-exceptions.md](docs/app-stylr-exceptions.md). Bundled Geist fonts retain their [SIL Open Font License](fonts/GEIST-LICENSE.txt).
 
-Review the [App Stylr Visual Reference](https://app-stylr.netlify.app/) before interface changes. The pinned release remains the implementation source of truth.
+Review the [App Stylr Visual Reference](https://kylbutlr.com/app-stylr) before interface changes. The pinned release remains the implementation source of truth.
 
 ## Support
 
@@ -139,4 +139,4 @@ Start with the [support guide](docs/support.md) and [troubleshooting guide](docs
 
 Parity Scrollr is available under the [MIT License](LICENSE).
 
-Current styling source: [App Stylr v1.3.0 adoption](docs/app-stylr-v1.3.0.md).
+Current styling source: [App Stylr v1.4.1 adoption](docs/app-stylr-v1.4.1.md).

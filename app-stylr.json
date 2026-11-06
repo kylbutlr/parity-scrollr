@@ -1,9 +1,12 @@
 {
   "name": "App Stylr",
-  "version": "1.3.0",
-  "release": "https://github.com/kylbutlr/app-stylr/tree/v1.3.0",
+  "version": "1.4.1",
+  "release": "https://github.com/kylbutlr/app-stylr/tree/v1.4.1",
   "theme": "dark",
   "exceptions": "docs/app-stylr-exceptions.md",
-  "sourceRevision": "555fe197f3bc615965f453eca27cbcdb83f13c0a",
-  "sourceTag": "v1.3.0"
+  "sourceRevision": "6fbc524f07ed7aa7db9c8593bf8116b9440937bc",
+  "sourceTag": "v1.4.1",
+  "accent": "mint",
+  "surfaceTone": "normal",
+  "density": "comfortable"
 }

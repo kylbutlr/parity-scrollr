@@ -50,10 +50,10 @@ assert.equal(
 assert.ok(read("fonts/GEIST-LICENSE.txt").includes("SIL OPEN FONT LICENSE Version 1.1"));
 
 const appStylr = JSON.parse(read("app-stylr.json"));
-assert.equal(appStylr.version, "1.3.0");
-assert.equal(appStylr.release, "https://github.com/kylbutlr/app-stylr/tree/v1.3.0");
-assert.ok(theme.includes('--app-stylr-version: "1.3.0"'));
-assert.ok(read("README.md").includes("App Stylr v1.3.0"));
+assert.equal(appStylr.version, "1.4.1");
+assert.equal(appStylr.release, "https://github.com/kylbutlr/app-stylr/tree/v1.4.1");
+assert.ok(theme.includes('--app-stylr-version: "1.4.1"'));
+assert.ok(read("README.md").includes("App Stylr v1.4.1"));
 assert.ok(!read("README.md").includes("app-design-system"));
 assert.ok(read("LICENSE").includes("MIT License"));
 

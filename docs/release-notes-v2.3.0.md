@@ -1,8 +1,8 @@
 # Parity Scrollr 2.3.0 candidate
 
-- Adopt pinned App Stylr v1.3.0, preserving charcoal surfaces and Sage accents.
+- Adopt pinned App Stylr v1.4.1, preserving charcoal surfaces and Sage accents.
 - Use sharper shared corner radii, restrained feedback and consistent focus/motion roles.
-- Keep the synchronized-arrow icon with a simpler flat charcoal background and larger small-size fit.
+- Keep the synchronized-arrow icon with a neutral Graphite gradient background and larger small-size fit.
 - Regenerate shared styles, fonts and icon exports reproducibly from the immutable package, with drift checks in the development/CI workflow.
 - Refresh the actual-interface preview using fictional local comparison pages.
 
