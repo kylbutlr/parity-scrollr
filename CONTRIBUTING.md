@@ -4,9 +4,10 @@ Parity Scrollr is a local-first visual review tool for desktop Chrome and Micros
 
 ## Development
 
-Use a supported Node.js LTS release and the system `bash`, `zip`, `unzip`, and `shasum` commands. There are no npm dependencies or compilation steps.
+Use Node.js 22.13 or newer and the system `bash`, `zip`, `unzip`, and `shasum` commands. The pinned App Stylr package is a development dependency for reproducible token, font and icon generation; the loaded extension has no npm runtime dependencies or compilation step.
 
 ```sh
+npm ci
 npm test
 npm run package
 cd dist

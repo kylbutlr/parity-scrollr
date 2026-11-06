@@ -1,12 +1,12 @@
 ## App Stylr
 
-This app follows [App Stylr v1.2.0 source](https://github.com/kylbutlr/app-stylr/tree/b3ca31ea264d5dd233fd871ac167247f1c306985).
+This app follows [App Stylr v1.4.1 source](https://github.com/kylbutlr/app-stylr/tree/v1.4.1).
 
 ### Required visual review
 
 Before implementing or reviewing interface work:
 
-1. Open the rendered [App Stylr Visual Reference and Style Guide](https://app-stylr.netlify.app/).
+1. Open the rendered [App Stylr Visual Reference and Style Guide](https://kylbutlr.com/app-stylr).
 2. Review the relevant hierarchy, typography, spacing, controls, states, responsive behavior, accessibility, and product voice before making UI decisions.
 3. Implement with the pinned App Stylr tokens and adapters. Do not sample or approximate values from screenshots.
 4. Compare the rendered app against both guides at the relevant viewports and interaction states before considering the interface complete.

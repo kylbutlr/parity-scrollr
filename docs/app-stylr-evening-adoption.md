@@ -1,5 +1,7 @@
 # App Stylr Evening adoption
 
+Historical record, superseded by [the v1.3.0 adoption](app-stylr-v1.3.0.md).
+
 The styling source baseline is App Stylr 1.2.0 at [b3ca31ea264d5dd233fd871ac167247f1c306985](https://github.com/kylbutlr/app-stylr/tree/b3ca31ea264d5dd233fd871ac167247f1c306985). This pins source, not a published version tag.
 
 Neutral charcoal surfaces use mint for actions, selection, and focus. Existing layouts, product glyphs, status colors, and interaction behavior are retained. The icon gradient uses #0D0D0D, #3B4145 at 48%, and #899F98.

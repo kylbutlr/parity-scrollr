@@ -25,7 +25,7 @@ button {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  transition: background var(--motion-control) ease, border-color var(--motion-control) ease, color var(--motion-control) ease;
 }
 
 button:hover {
@@ -81,16 +81,16 @@ select,
 .dimension-control {
   height: 30px;
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   color: var(--ui-text);
   background: var(--ui-surface-raised);
   font-size: 12px;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color var(--motion-control) ease, box-shadow var(--motion-control) ease;
 }
 
 #viewport-preset {
   width: 220px;
-  padding: 0 28px 0 9px;
+  padding: 0 12px 0 9px;
 }
 
 .dimension-control {
@@ -107,7 +107,7 @@ select,
 select:focus {
   border-color: var(--ui-accent);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(169, 206, 194, 0.14);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-focus) 14%, transparent);
 }
 
 .dimension-control input {
@@ -198,7 +198,7 @@ select:focus {
   width: min(380px, calc(100vw - 28px));
   padding: 18px;
   border: 1px solid var(--ui-border-strong);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   color: var(--ui-text);
   background: var(--ui-surface-raised);
   max-height: min(520px, 65vh);
@@ -292,19 +292,19 @@ select:focus {
 }
 
 .capture-controls button:first-child {
-  border-radius: 8px 0 0 8px;
+  border-radius: var(--radius-control) 0 0 var(--radius-control);
 }
 
 .capture-controls button:last-child {
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
 }
 
 .history-controls button:first-child {
-  border-radius: 8px 0 0 8px;
+  border-radius: var(--radius-control) 0 0 var(--radius-control);
 }
 
 .history-controls button:last-child {
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
 }
 
 .toggle {
@@ -314,7 +314,7 @@ select:focus {
   min-height: 32px;
   padding: 0 10px;
   border: 1px solid var(--ui-border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   color: var(--ui-text-muted);
   background: var(--ui-surface-raised);
   font-size: 12px;
@@ -451,7 +451,7 @@ select:focus {
   justify-content: center;
   gap: 8px;
   color: var(--ui-text-muted);
-  background: rgba(13, 16, 16, 0.9);
+  background: color-mix(in srgb, var(--ui-canvas) 90%, transparent);
   font-size: 12px;
   pointer-events: none;
 }
@@ -471,9 +471,9 @@ select:focus {
   flex-wrap: wrap;
   width: min(440px, calc(100% - 16px));
   padding: 10px 11px 11px;
-  border: 1px solid var(--ui-warning);
+  border: 1px solid var(--ui-border);
   color: var(--ui-warning);
-  background: rgba(29, 34, 34, 0.96);
+  background: color-mix(in srgb, var(--ui-surface) 96%, transparent);
   transform: translateX(-50%);
   white-space: normal;
   pointer-events: auto;
@@ -544,8 +544,8 @@ select:focus {
 .fatal-card {
   width: min(520px, 100%);
   padding: 28px;
-  border: 1px solid var(--ui-danger);
-  border-radius: 16px;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-dialog);
   color: var(--ui-text);
   background: var(--ui-surface);
 }

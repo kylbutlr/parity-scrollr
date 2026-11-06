@@ -1,9 +1,17 @@
 {
   "name": "parity-scrollr",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "private": true,
   "scripts": {
-    "test": "node --test",
-    "package": "bash scripts/package-extension.sh"
+    "test": "npm run styles:check && node --test",
+    "package": "bash scripts/package-extension.sh",
+    "styles": "node scripts/sync-app-stylr.mjs",
+    "styles:check": "node scripts/sync-app-stylr.mjs --check"
+  },
+  "devDependencies": {
+    "app-stylr": "https://github.com/kylbutlr/app-stylr/archive/refs/tags/v1.4.1.tar.gz"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }
