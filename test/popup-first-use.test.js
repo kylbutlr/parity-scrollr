@@ -146,8 +146,22 @@ class FakeElement {
   );
   assert.match(elements.get("#access-note").textContent, /review the exact sites/i);
 
-  elements.get("#replica-url").value = "https://replica.example/products/example";
+  for (const value of ["", "ftp://replica.example/", "https://user:password@replica.example/", "chrome://settings/", "https://admin.shopify.com/store/demo/themes", "https://[invalid"]) {
+    elements.get("#replica-url").value = value;
+    await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
+    assert.equal(elements.get("#error").hidden, false, `unsupported URL must fail: ${value}`);
+    if (value === "") assert.match(elements.get("#error").textContent, /Enter a website address/);
+    if (value === "https://[invalid") assert.match(elements.get("#error").textContent, /Enter a valid website address/);
+    assert.equal(requestedOrigins.length, 0, "invalid input must never request access");
+  }
+
+  assert.match(fs.readFileSync(path.join(root, "popup.html"), "utf8"), /<form\b[^>]*id="compare-form"[^>]*\bnovalidate\b/,
+    "explicit URL/image validation must run before native URL validation blocks bare hosts");
+  elements.get("#reference-url").value = "reference.example/products/example";
+  elements.get("#replica-url").value = "replica.example/products/example";
   await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
+  assert.equal(elements.get("#reference-url").value, "https://reference.example/products/example");
+  assert.equal(elements.get("#replica-url").value, "https://replica.example/products/example");
 
   assert.equal(requestedOrigins.length, 0, "the first action must not request permission");
   assert.equal(elements.get("#setup-view").hidden, true);
@@ -204,7 +218,7 @@ class FakeElement {
   assert.equal(elements.get("#reference-css-width").value, "", "image pixels must not choose the live viewport width");
   assert.match(elements.get("#reference-image-help").textContent, /not this export width/i);
   await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
-  assert.match(elements.get("#error").textContent, /Enter the Figma frame width/i);
+  assert.match(elements.get("#error").textContent, /Enter the design width/i);
   elements.get("#reference-css-width").value = "1440";
   await elements.get("#compare-form").listeners.get("submit")({ preventDefault() {} });
   assert.deepEqual(

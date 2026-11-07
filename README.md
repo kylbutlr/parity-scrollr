@@ -41,9 +41,12 @@ Keep the extracted folder in place. Updates are manual: end comparisons, replace
 
 1. Open the reference page and click the toolbar icon.
 2. Enter the implementation page.
+
 3. Comparisons start normally. If a page does not report ready within 15 seconds, Parity Scrollr makes one automatic Compatibility retry and shows the change in the session status. Recognized Shopify preview bars are hidden automatically during full-page capture. Shopify Admin URLs are not comparison pages and are rejected before permission is requested.
 4. Review the exact selected sites and why access is needed, then continue to Chrome's permission prompt and open the comparison.
 5. Use Sync scroll, URL parity, Blink mode, responsive presets, custom dimensions, Max height, and the page history controls.
+
+You can enter a website address with or without `https://`. Addresses without a protocol use HTTPS; include `http://` explicitly for a local server that uses HTTP.
 
 URL parity is off by default. When enabled, its safer mode copies only the path and preserves the other site's own query string and fragment. Query + hash is a separate opt-in because those parts can contain preview or signed-link tokens.
 
@@ -53,7 +56,7 @@ Find URL parity, reference history, Swap sides, Reload both, and Settings under 
 
 ### Compare a design export with a live page
 
-1. Export the specific Figma frame as PNG or JPEG. Use the design frame rather than an annotation slide or an entire Figma canvas.
+1. Export one design frame as PNG or JPEG, from Figma or another design tool. Use the frame rather than an annotation slide or an entire canvas.
 2. Click Parity Scrollr, choose **Design image** as the reference type, and select the export. Images must be 32 MiB or smaller and no larger than 32 megapixels.
 3. Enter the frame's authored width in CSS pixels. For example, a 1440 px Figma frame uses **1440**, even if the exported image is only 514 pixels wide. The export's pixel width does not set the live page's layout.
 4. Enter the implementation URL. Review access to that one site, then open the comparison.
