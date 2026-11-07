@@ -18,7 +18,7 @@
       <h1>Start a comparison</h1>
       <p id="setup-intro" class="intro">The page you are viewing is the reference. Add the page you want to compare with it.</p>
 
-      <form id="compare-form">
+      <form id="compare-form" novalidate>
         <div class="reference-kind-field">
           <label for="reference-kind">Reference type</label>
           <select id="reference-kind">
@@ -39,8 +39,8 @@
         <div id="reference-image-field" class="field-group" hidden>
           <label for="reference-image">Design export, PNG or JPEG</label>
           <input id="reference-image" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" />
-          <p id="reference-image-help" class="field-help">Export the Figma frame, not the annotation slide. The image stays on this device and is removed when the comparison ends.</p>
-          <label for="reference-css-width">Figma frame width in CSS pixels</label>
+          <p id="reference-image-help" class="field-help">Export one design frame, not a full canvas or annotation slide. The image stays on this device and is removed when the comparison ends.</p>
+          <label for="reference-css-width">Design width (CSS px)</label>
           <input id="reference-css-width" type="number" min="240" max="3840" step="1" placeholder="1440 for desktop" />
           <p class="field-help">Enter the frame width, such as 1440 for a desktop design. The PNG's pixel width does not set the live page layout.</p>
         </div>

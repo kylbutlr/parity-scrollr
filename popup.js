@@ -76,8 +76,16 @@ async function inspectReferenceImage(file) {
 
 function normalizeUrl(value) {
   const trimmed = value.trim();
+  if (!trimmed) {
+    throw new Error("Enter a website address before reviewing site access.");
+  }
   const withProtocol = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  const url = new URL(withProtocol);
+  let url;
+  try {
+    url = new URL(withProtocol);
+  } catch {
+    throw new Error("Enter a valid website address, such as https://example.com.");
+  }
 
   if (!["http:", "https:"].includes(url.protocol)) {
     throw new Error("Only regular http:// or https:// pages can be compared.");
@@ -229,13 +237,14 @@ form.addEventListener("submit", async (event) => {
   try {
     const image = isImageReference();
     const pair = { replicaUrl: normalizeUrl(replicaInput.value) };
+    replicaInput.value = pair.replicaUrl;
     let referenceFile = null;
     if (image) {
       referenceFile = referenceImageInput.files?.[0];
       const dimensions = await inspectReferenceImage(referenceFile);
       const cssWidth = Number(referenceCssWidthInput.value);
       if (!Number.isInteger(cssWidth) || cssWidth < 240 || cssWidth > 3840) {
-        throw new Error("Enter the Figma frame width between 240 and 3840 CSS pixels.");
+        throw new Error("Enter the design width between 240 and 3840 CSS pixels.");
       }
       pair.referenceKind = "image";
       pair.referenceImage = {
@@ -246,6 +255,7 @@ form.addEventListener("submit", async (event) => {
       };
     } else {
       pair.referenceUrl = normalizeUrl(referenceInput.value);
+      referenceInput.value = pair.referenceUrl;
     }
     pair.options = {
       broadHostAccess: settings.broadHostAccess,
