@@ -14,9 +14,9 @@ App preview of Parity Scrollr 2.3.0 with demo data. [App overview](https://kylbu
 
 ## Status
 
-Version **2.3.0**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
+Version **2.3.1**. Parity Scrollr is distributed through GitHub downloads and uses Developer mode and Load unpacked in desktop Chrome and Microsoft Edge; browser-store distribution is outside the current release scope. The broader installed-browser QA matrix, including Edge verification, remains incomplete.
 
-[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [2.3.0 release notes](docs/release-notes-v2.3.0.md)
+[GitHub releases](https://github.com/kylbutlr/parity-scrollr/releases) · [Installation and updates](INSTALL.md) · [2.3.1 release notes](docs/release-notes-v2.3.1.md)
 
 ## Highlights
 
