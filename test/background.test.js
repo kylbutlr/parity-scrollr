@@ -41,11 +41,16 @@ const chrome = {
   declarativeNetRequest: {
     async getSessionRules() { return sessionRules; },
     async updateSessionRules(change) {
+      for (const id of [...(change.removeRuleIds || []), ...(change.addRules || []).map(rule => rule.id)]) {
+        assert.ok(Number.isInteger(id) && id > 0 && id <= 2147483647,
+          `Chrome DNR rule IDs must be positive signed 32-bit integers: ${id}`);
+      }
       sessionRules = sessionRules.filter((rule) => !change.removeRuleIds?.includes(rule.id));
       sessionRules.push(...(change.addRules || []));
     }
   },
   permissions: {
+    onAdded: { addListener(listener) { listeners.permissionAdded = listener; } },
     async contains({ origins }) { return origins.every((origin) => grantedOrigins.has(origin)); },
     async remove({ origins }) {
       removedPermissionSets.push([...origins]);
@@ -207,7 +212,29 @@ function sendMessage(message, sender) {
   await sendMessage({ type: "END_COMPARISON" }, imageSender);
   assert.equal(savedImages.has("designtest"), false, "ending must remove the imported image");
 
-  console.log("permission-scoped comparison session regressions: PASS");
+  // Actual Chromium profiles can assign tab IDs close to the signed 32-bit limit.
+  const largeSender = { ...sender, tab: { id: 2133262949 } };
+  const secondLargeSender = { ...sender, tab: { id: 2147483647 } };
+  request.origins.forEach(origin => grantedOrigins.add(origin));
+  const largeStandard = await sendMessage(request, largeSender);
+  assert.equal(largeStandard.ok, true, "large tab IDs must work in standard mode");
+  const largeCompatible = await sendMessage({ ...request, compatibilityMode: true }, largeSender);
+  assert.equal(largeCompatible.ok, true, "large tab IDs must work in Compatibility mode");
+  const firstIds = sessionRules.map(rule => rule.id);
+  const secondCompatible = await sendMessage({ ...request, compatibilityMode: true }, secondLargeSender);
+  assert.equal(secondCompatible.ok, true);
+  const secondIds = sessionRules.filter(rule => rule.condition.tabIds[0] === secondLargeSender.tab.id).map(rule => rule.id);
+  assert.equal(secondIds.length, 2);
+  assert.ok(secondIds.every(id => !firstIds.includes(id)), "active comparisons must not share rule IDs");
+  await sendMessage({ type: "END_COMPARISON" }, largeSender);
+  assert.deepEqual(sessionRules.map(rule => rule.id), secondIds, "cleanup must preserve the other comparison's rules");
+  listeners.removed(73);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(sessionRules.map(rule => rule.id), secondIds, "an unrelated tab close must not delete allocated rules");
+  await sendMessage({ type: "END_COMPARISON" }, secondLargeSender);
+  assert.equal(sessionRules.length, 0);
+
+  console.log("permission-scoped comparison session and large-tab-ID regressions: PASS");
 })().catch((error) => {
   console.error(error);
   process.exitCode = 1;

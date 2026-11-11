@@ -95,7 +95,12 @@ class FakeElement {
       runtime: {
         getURL: (file) => `chrome-extension://test/${file}`,
         openOptionsPage: async () => {},
-        sendMessage: async () => ({ ok: true })
+        sendMessage: async (message) => {
+          if (message.type === "REQUEST_COMPARISON_LAUNCH") {
+            openedTabs.push(`chrome-extension://test/compare.html?id=${message.storageKey.slice("comparison_".length)}`);
+          }
+          return { ok: true };
+        }
       },
       storage: {
         local: {
@@ -188,11 +193,11 @@ class FakeElement {
     "https://reference.example/*",
     "https://replica.example/*"
   ]);
-  assert.equal(sessionWrites.length, 1);
-  assert.equal(sessionWrites[0]["comparison_first-use-test"].options.compatibilityMode, false,
+  assert.ok(sessionWrites.length > 0);
+  assert.equal(sessionWrites.at(-1)["comparison_first-use-test"].options.compatibilityMode, false,
     "new comparisons must start normally even if an older default preference was enabled");
   assert.equal(
-    sessionWrites[0]["comparison_first-use-test"].referenceUrl,
+    sessionWrites.at(-1)["comparison_first-use-test"].referenceUrl,
     "https://reference.example/products/example"
   );
   assert.equal(

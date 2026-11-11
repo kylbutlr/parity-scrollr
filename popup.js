@@ -133,7 +133,14 @@ function renderAccessNote() {
     : "Next, review the exact sites Parity Scrollr needs before Chrome asks for access.";
 }
 
-function showSetup() {
+async function showSetup() {
+  if (pendingReview?.storageKey) {
+    await chrome.runtime.sendMessage({
+      type: "CANCEL_COMPARISON_LAUNCH",
+      storageKey: pendingReview.storageKey,
+      origins: pendingReview.origins
+    });
+  }
   pendingReview = null;
   accessReviewView.hidden = true;
   setupView.hidden = false;
@@ -142,6 +149,7 @@ function showSetup() {
 
 function showAccessReview(pair, origins) {
   pendingReview = { origins, pair };
+  confirmAccessButton.disabled = false;
   requestedSites.replaceChildren();
   for (const origin of origins) {
     const item = document.createElement("li");
@@ -265,8 +273,23 @@ form.addEventListener("submit", async (event) => {
     const origins = ParitySiteAccess.uniqueOriginPatterns(
       image ? [pair.replicaUrl] : [pair.referenceUrl, pair.replicaUrl]
     );
+    const comparisonId = crypto.randomUUID();
+    const storageKey = `comparison_${comparisonId}`;
+    pair.origins = origins;
+    pair.createdAt = Date.now();
+    if (image) {
+      pair.referenceImage.imageId = comparisonId;
+      await ParityImageStore.save(comparisonId, referenceFile, pair.referenceImage.cssWidth);
+    }
+    try {
+      await chrome.storage.session.set({ [storageKey]: pair });
+    } catch (error) {
+      if (image) await ParityImageStore.remove(comparisonId).catch(() => {});
+      throw error;
+    }
     showAccessReview(pair, origins);
     pendingReview.referenceFile = referenceFile;
+    pendingReview.storageKey = storageKey;
   } catch (error) {
     errorMessage.textContent = error.message || "Check both URLs and try again.";
     errorMessage.hidden = false;
@@ -285,41 +308,18 @@ confirmAccessButton.addEventListener("click", async () => {
   confirmAccessButton.textContent = settings.broadHostAccess
     ? "Opening comparison…"
     : "Requesting site access…";
-  let storageKey = null;
-  const { origins, pair, referenceFile } = pendingReview;
+  const { origins, pair, storageKey } = pendingReview;
 
   try {
-    if (!settings.broadHostAccess) {
-      const granted = await chrome.permissions.request({ origins });
-      if (!granted) {
-        throw new Error("Chrome did not grant access. No comparison was opened.");
-      }
-    }
-
-    const comparisonId = crypto.randomUUID();
-    storageKey = `comparison_${comparisonId}`;
-    if (pair.referenceKind === "image") {
-      pair.referenceImage.imageId = comparisonId;
-    }
-    pair.origins = origins;
-    pair.createdAt = Date.now();
-
-    await chrome.storage.session.set({ [storageKey]: pair });
-    if (pair.referenceKind === "image") {
-      try {
-        await ParityImageStore.save(comparisonId, referenceFile, pair.referenceImage.cssWidth);
-      } catch {
-        throw new Error("The design image could not be saved locally. Check browser storage space and try again.");
-      }
-    }
-    if (settings.rememberReplicaUrl) {
-      await chrome.storage.local.set({ lastReplicaUrl: pair.replicaUrl });
-    } else {
-      await chrome.storage.local.remove("lastReplicaUrl");
-    }
-    await chrome.tabs.create({
-      url: chrome.runtime.getURL(`compare.html?id=${encodeURIComponent(comparisonId)}`)
-    });
+    // The native permission sheet can destroy this popup. The worker owns launch.
+    // Do not await anything before requesting permission from this user gesture.
+    const launch = chrome.runtime.sendMessage({ type: "REQUEST_COMPARISON_LAUNCH", storageKey });
+    const permission = settings.broadHostAccess
+      ? Promise.resolve(true)
+      : chrome.permissions.request({ origins });
+    const [result, granted] = await Promise.all([launch, permission]);
+    if (!result?.ok) throw new Error(result?.error || "The comparison could not be opened.");
+    if (!granted) throw new Error("Chrome did not grant access. No comparison was opened.");
     window.close();
   } catch (error) {
     if (storageKey) {
@@ -332,13 +332,13 @@ confirmAccessButton.addEventListener("click", async () => {
         await ParityImageStore.remove(pair.referenceImage.imageId).catch(() => {});
       }
     }
-    accessReviewError.textContent = error.message || "The comparison could not be opened.";
-    accessReviewError.hidden = false;
-    accessReviewError.focus();
-    confirmAccessButton.disabled = false;
-    confirmAccessButton.textContent = settings.broadHostAccess
-      ? "Open comparison"
-      : "Allow these sites and open comparison";
+    // The cancelled record is gone. Return to setup so retry prepares fresh data.
+    pendingReview = null;
+    accessReviewView.hidden = true;
+    setupView.hidden = false;
+    errorMessage.textContent = error.message || "The comparison could not be opened.";
+    errorMessage.hidden = false;
+    errorMessage.focus();
   }
 });
 
