@@ -1,7 +1,7 @@
 importScripts("settings-data.js", "site-access.js", "image-store.js");
 
 const RULE_OFFSET = 100000;
-const RULES_PER_TAB = 2;
+const MAX_RULE_ID = 2147483647;
 const ACTIVE_SESSION_PREFIX = "activeComparison_";
 const CAPTURE_ACCESS_PREFIX = "captureAccess_";
 const LAUNCH_PREFIX = "comparison_";
@@ -27,13 +27,25 @@ function captureAccessKey(tabId) {
   return `${CAPTURE_ACCESS_PREFIX}${tabId}`;
 }
 
-function ruleIdsForTab(tabId) {
-  const first = RULE_OFFSET + tabId * RULES_PER_TAB;
-  return [first, first + 1];
+function storedRuleIds(session) {
+  return (session?.ruleIds || []).filter(isManagedRuleId);
+}
+
+async function allocateRuleIds(count, replacing) {
+  const replaceable = new Set(replacing);
+  const rules = await chrome.declarativeNetRequest.getSessionRules();
+  const used = new Set(rules.filter(rule => !replaceable.has(rule.id)).map(rule => rule.id));
+  const ids = [];
+  // DNR IDs are independent of Chrome tab IDs, which can already approach INT32_MAX.
+  for (let id = RULE_OFFSET; ids.length < count && id <= MAX_RULE_ID; id += 1) {
+    if (!used.has(id)) ids.push(id);
+  }
+  if (ids.length !== count) throw new Error("No comparison rule IDs are available. End another comparison and try again.");
+  return ids;
 }
 
 function isManagedRuleId(ruleId) {
-  return Number.isInteger(ruleId) && ruleId >= RULE_OFFSET;
+  return Number.isInteger(ruleId) && ruleId >= RULE_OFFSET && ruleId <= MAX_RULE_ID;
 }
 
 function contentScriptIdForTab(tabId) {
@@ -123,8 +135,9 @@ async function prepareComparisonTab(tabId, request) {
     }
   }
 
-  const ruleIds = ruleIdsForTab(tabId);
+  const previousRuleIds = storedRuleIds(previousSession);
   const compatibilityMode = request.compatibilityMode === true;
+  const ruleIds = compatibilityMode ? await allocateRuleIds(origins.length, previousRuleIds) : [];
   const addRules = compatibilityMode
     ? origins.map((origin, index) => ruleForOrigin(tabId, origin, ruleIds[index]))
     : [];
@@ -132,7 +145,7 @@ async function prepareComparisonTab(tabId, request) {
   try {
     const contentScriptId = await registerComparisonScript(tabId, origins);
     await chrome.declarativeNetRequest.updateSessionRules({
-      removeRuleIds: ruleIds,
+      removeRuleIds: previousRuleIds,
       addRules
     });
 
@@ -161,7 +174,7 @@ async function prepareComparisonTab(tabId, request) {
   } catch (error) {
     await Promise.allSettled([
       unregisterComparisonScript(tabId),
-      chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: ruleIds })
+      chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: [...new Set([...previousRuleIds, ...ruleIds])] })
     ]);
     throw error;
   }
@@ -209,7 +222,7 @@ async function cleanupComparisonTab(tabId) {
   const key = sessionKey(tabId);
   const stored = await chrome.storage.session.get(key);
   const session = stored[key];
-  const ruleIds = session?.ruleIds?.length ? session.ruleIds : ruleIdsForTab(tabId);
+  const ruleIds = storedRuleIds(session);
 
   await Promise.allSettled([
     chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: ruleIds }),
@@ -319,9 +332,70 @@ async function reconcileSessions() {
     await chrome.scripting.unregisterContentScripts({ ids: orphanContentScriptIds });
   }
   await releaseUnusedOrigins(staleLaunchOrigins);
+  await resumeApprovedLaunches();
 }
 
+async function openApprovedLaunch(storageKey, pair) {
+  if (!pair?.launchRequested || pair.launchOpening) return;
+  if (!Number.isFinite(pair.createdAt) || Date.now() - pair.createdAt > LAUNCH_MAX_AGE) {
+    throw new Error("The comparison setup expired. Review the sites again.");
+  }
+  const origins = normalizeOrigins(pair.origins);
+  if (!await chrome.permissions.contains({ origins })) return;
+  if (pair.referenceKind === "image" && !await ParityImageStore.has(pair.referenceImage?.imageId)) {
+    throw new Error("The design image expired. Review the sites again.");
+  }
+  // Mark before creating the tab: its page can consume launch data immediately.
+  await chrome.storage.session.set({ [storageKey]: { ...pair, launchOpening: true } });
+  try {
+    const stored = await chrome.storage.local.get("paritySettings");
+    if (ParitySettings.normalize(stored.paritySettings).rememberReplicaUrl) {
+      await chrome.storage.local.set({ lastReplicaUrl: pair.replicaUrl });
+    } else {
+      await chrome.storage.local.remove("lastReplicaUrl");
+    }
+    await chrome.tabs.create({
+      url: `${COMPARE_URL}?id=${encodeURIComponent(storageKey.slice(LAUNCH_PREFIX.length))}`
+    });
+  } catch (error) {
+    await chrome.storage.session.set({ [storageKey]: {
+      ...pair, launchRequested: false, launchError: error.message
+    } });
+    throw error;
+  }
+}
+
+async function resumeApprovedLaunches() {
+  const stored = await chrome.storage.session.get(null);
+  for (const [key, pair] of Object.entries(stored)) {
+    if (key.startsWith(LAUNCH_PREFIX) && pair?.launchRequested && !pair.launchOpening &&
+        Number.isFinite(pair.createdAt) && Date.now() - pair.createdAt <= LAUNCH_MAX_AGE) {
+      await openApprovedLaunch(key, pair);
+    }
+  }
+}
+
+chrome.permissions.onAdded.addListener(() => {
+  runSessionOperation(resumeApprovedLaunches).catch(() => {});
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type === "REQUEST_COMPARISON_LAUNCH") {
+    if (sender.url !== POPUP_URL || !/^comparison_[a-z\d-]{1,80}$/i.test(message.storageKey)) {
+      sendResponse({ ok: false, error: "The comparison setup could not be identified." });
+      return false;
+    }
+    runSessionOperation(async () => {
+      const pair = (await chrome.storage.session.get(message.storageKey))[message.storageKey];
+      if (!pair) throw new Error("The comparison setup expired. Review the sites again.");
+      if (pair.launchOpening) return;
+      const requested = { ...pair, launchRequested: true };
+      await chrome.storage.session.set({ [message.storageKey]: requested });
+      await openApprovedLaunch(message.storageKey, requested);
+    }).then(() => sendResponse({ ok: true }))
+      .catch(error => sendResponse({ ok: false, error: error.message }));
+    return true;
+  }
   if (message?.type === "PREPARE_COMPARISON_TAB") {
     if (!sender.tab?.id || !sender.url?.startsWith(COMPARE_URL)) {
       sendResponse({ ok: false, error: "The comparison tab could not be identified." });
